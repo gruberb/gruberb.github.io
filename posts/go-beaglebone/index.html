@@ -52,14 +52,14 @@
   <span class="post-date">Sun, Mar 26, 2017</span>
   <p><img src="https://preview.ibb.co/iN3fmF/header.jpg" alt="BeagleBone"></p>
 <p>I have to admit, the power of IoT did not yet reach my little nerd life here in Berlin. Therefore, I took an effort this year and went to an IoT Hackathon. It was a fun weekend, I think there were just 5 developers and the rest of the crowd came from a social and educational background. Which made it even more fun and interesting.</p>
-<p>Anyway, since this weekend I ordered a RaspberryPi and tried to do something useful with it. This idea, and my other habit of simplyfing my life clashed a little bit. So the RaspberryPi sat around for way too long with no real purpose. After browsing the internet though, I found an interesting <!-- raw HTML omitted -->post from Sayan who set up a BeagleBone board with Go<!-- raw HTML omitted -->. After React, Go is one of the new technologies I really like. After reading the article, I ordered the BeagleBone Black Wireless and waited impatiently for it to arrive.</p>
+<p>Anyway, since this weekend I ordered a RaspberryPi and tried to do something useful with it. This idea, and my other habit of simplyfing my life clashed a little bit. So the RaspberryPi sat around for way too long with no real purpose. After browsing the internet though, I found an interesting <a href="https://blog.sayan.ee/bbb">post from Sayan who set up a BeagleBone board with Go</a>. After React, Go is one of the new technologies I really like. After reading the article, I ordered the BeagleBone Black Wireless and waited impatiently for it to arrive.</p>
 <p>Finally there, I did around 4 hours of trial and error to finally figure out how this little board works and what I have to do. Mainly, I wanted:</p>
 <ul>
 <li>Install Debian on it</li>
 <li>Booting it without the need of a SD Card</li>
 <li>Run a Go server or something useful on it</li>
 </ul>
-<p>At the Hackathon back then, I created a temperature and noise dashboard (<!-- raw HTML omitted -->code is on GitHub<!-- raw HTML omitted -->). Maybe the BeagleBone could do the same for me at home?</p>
+<p>At the Hackathon back then, I created a temperature and noise dashboard (<a href="https://github.com/gruberb/IoTHack16">code is on GitHub</a>). Maybe the BeagleBone could do the same for me at home?</p>
 <p>During this simple steps, I bricked the device twice, found some old post in some forum how to rebuild it and now I have working BeagleBone Black Wireless. In addition, I installed my own Go server on it to access it without a USB connection.</p>
 <h2 id="sane-howto-without-the-errors">Sane HowTo (without the errors)</h2>
 <ul>
@@ -76,7 +76,7 @@
 <p>Download it, and then unarchive it with Unarchiver for Mac or 7zip.</p>
 </li>
 <li>
-<p>You can now use your Terminal to create a working SD Card with this image, or <!-- raw HTML omitted -->just use this tool<!-- raw HTML omitted -->.</p>
+<p>You can now use your Terminal to create a working SD Card with this image, or <a href="https://etcher.io">just use this tool</a>.</p>
 </li>
 </ul>
 <p><code>sudo dd if=BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img of=/dev/disk2s1</code></p>
