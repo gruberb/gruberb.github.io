@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Devops on Bastian Gruber</title>
+    <link>https://gruberbastian.com/tags/devops/</link>
+    <description>Recent content in Devops on Bastian Gruber</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 12 Dec 2016 20:37:04 +0200</lastBuildDate>
+    
+	<atom:link href="https://gruberbastian.com/tags/devops/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>The beauty of DevOps</title>
+      <link>https://gruberbastian.com/posts/devops/</link>
+      <pubDate>Mon, 12 Dec 2016 20:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/devops/</guid>
+      <description>For my latest client, I got hired as a Fullstack JavaScript developer, plus DevOps, plus Frontend. The project is to rebuild the old PHP codebase onto a new stack containing Node, Angular and Microservices. The deployment is done via Docker and DockerCloud, hosted partly on AWS servers. As complicated as it sounds, new projects don&amp;rsquo;t have the nitty gritty problems legacy systems have. I think what you have to bring to such a project is a broad understanding of each technology and how they interact together.</description>
+    </item>
+    
+  </channel>
+</rss>

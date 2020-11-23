@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/first_principles/</loc>
+    <lastmod>2020-11-23T08:56:38+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/remote/</loc>
+    <lastmod>2019-12-30T14:37:04+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/coup/</loc>
+    <lastmod>2019-11-07T09:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/rust_brave/</loc>
+    <lastmod>2019-06-11T09:51:55+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/rust_futures/</loc>
+    <lastmod>2019-05-02T20:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/rust_api/</loc>
+    <lastmod>2019-04-15T09:51:55+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/rust_async/</loc>
+    <lastmod>2019-04-02T20:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/deploy_rust/</loc>
+    <lastmod>2019-04-02T20:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/intro_rust/</loc>
+    <lastmod>2019-03-25T20:20:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/naming-things/</loc>
+    <lastmod>2018-12-01T09:51:55+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/project-one-month/</loc>
+    <lastmod>2018-10-01T08:00:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/talks/</loc>
+    <lastmod>2018-09-10T14:37:04+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/openmachine/</loc>
+    <lastmod>2017-10-30T10:37:04+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/gitprof/</loc>
+    <lastmod>2017-05-04T18:37:04+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/switch/</loc>
+    <lastmod>2017-04-12T10:40:41+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/go-beaglebone/</loc>
+    <lastmod>2017-03-26T10:20:55+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/sideeffects/</loc>
+    <lastmod>2017-02-27T09:51:55+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/devops/</loc>
+    <lastmod>2016-12-12T20:37:04+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/usedum/</loc>
+    <lastmod>2016-12-01T14:37:04+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/about/</loc>
+    <lastmod>2016-10-03T16:37:27+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/interviews/</loc>
+    <lastmod>2012-08-03T14:37:04+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/</loc>
+    <lastmod>2020-11-23T08:56:38+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/coding/</loc>
+    <lastmod>2019-06-11T09:51:55+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/categories/coding/</loc>
+    <lastmod>2017-05-04T18:37:04+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/categories/development/</loc>
+    <lastmod>2016-10-03T16:37:27+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/devops/</loc>
+    <lastmod>2016-12-12T20:37:04+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/categories/devops/</loc>
+    <lastmod>2016-12-12T20:37:04+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/diy/</loc>
+    <lastmod>2017-10-30T10:37:04+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/categories/diy/</loc>
+    <lastmod>2017-10-30T10:37:04+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/iot/</loc>
+    <lastmod>2017-03-26T10:20:55+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/categories/learning/</loc>
+    <lastmod>2018-10-01T08:00:00+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/life/</loc>
+    <lastmod>2020-11-23T08:56:38+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/posts/</loc>
+    <lastmod>2020-11-23T08:56:38+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/rust/</loc>
+    <lastmod>2019-05-02T20:20:00+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/</loc>
+    <lastmod>2019-06-11T09:51:55+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/tools/</loc>
+    <lastmod>2017-04-12T10:40:41+01:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/travelling/</loc>
+    <lastmod>2016-12-01T14:37:04+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/categories/travelling/</loc>
+    <lastmod>2016-12-01T14:37:04+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/tags/work/</loc>
+    <lastmod>2019-12-30T14:37:04+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://gruberbastian.com/categories/work/</loc>
+    <lastmod>2019-12-30T14:37:04+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

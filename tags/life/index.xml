@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Life on Bastian Gruber</title>
+    <link>https://gruberbastian.com/tags/life/</link>
+    <description>Recent content in Life on Bastian Gruber</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 23 Nov 2020 08:56:38 +0000</lastBuildDate>
+    
+	<atom:link href="https://gruberbastian.com/tags/life/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Consuming, learning and operating on first principles</title>
+      <link>https://gruberbastian.com/posts/first_principles/</link>
+      <pubDate>Mon, 23 Nov 2020 08:56:38 +0000</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/first_principles/</guid>
+      <description>After wanting to put words on my tinkering and thinking for probably the past 15 years, I came across a few articles which exactly do this. The first one was &amp;ldquo;How Julia Child Used First Principles Thinkinh&amp;rdquo; on Farnman Street. After reading it I realized that espeically in the last few years, I want to go to the basic ingredients of a certain genre or field instead of consuming what&amp;rsquo;s offered.</description>
+    </item>
+    
+    <item>
+      <title>Fond memories about co.up and MeetUp.com</title>
+      <link>https://gruberbastian.com/posts/coup/</link>
+      <pubDate>Thu, 07 Nov 2019 09:00:00 +0100</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/coup/</guid>
+      <description>I moved to Berlin in 2013, joining a StartUp called Dalia Reserach. Back then I still studied, and planned to finish my Bachelors at the beginning of 2014. But, the company needed people now so I quit my scholarship at Allianz, moved part-time to Berlin and commuted back and forth. I finished my studies in February and moved permanently to Berlin in March.
+It was still late in the hype-cycle of the city, but you could feel the freedom to do whatever and whenever you want.</description>
+    </item>
+    
+    <item>
+      <title>Downsizing and its side effects</title>
+      <link>https://gruberbastian.com/posts/sideeffects/</link>
+      <pubDate>Mon, 27 Feb 2017 09:51:55 +0100</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/sideeffects/</guid>
+      <description>For quite a long time now, I have been reading these two books:
+ Early Retirement Extreme Your Money or Your Life  These titles suggest that it&amp;rsquo;s all about earning lots of money and then coasting your way through life. After reading the first few pages however, it becomes clear that the goal of these books is to provide you with a new mindset.
+You can see all the hipsters in big cities are trying to do the same: eat locally, cook your own food, be aware of the consequences of your actions.</description>
+    </item>
+    
+  </channel>
+</rss>

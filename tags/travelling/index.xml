@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Travelling on Bastian Gruber</title>
+    <link>https://gruberbastian.com/tags/travelling/</link>
+    <description>Recent content in Travelling on Bastian Gruber</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 01 Dec 2016 14:37:04 +0200</lastBuildDate>
+    
+	<atom:link href="https://gruberbastian.com/tags/travelling/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Usedum in fall</title>
+      <link>https://gruberbastian.com/posts/usedum/</link>
+      <pubDate>Thu, 01 Dec 2016 14:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/usedum/</guid>
+      <description>Hectic and grey Berlin is vibrant, always “on” and full of inspirational people. If you are looking for something, you will find it. But, what makes the city such a astounding place to live in, is also the reason why it is draining your energy and emotions. Not alone this, but the architecture of big and wide streets and sometimes narrow and huge houses are great in the summer, but aweful to look at in Winter.</description>
+    </item>
+    
+  </channel>
+</rss>
