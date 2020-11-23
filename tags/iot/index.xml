@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>iot on Bastian Gruber</title>
+    <link>https://gruberbastian.com/tags/iot/</link>
+    <description>Recent content in iot on Bastian Gruber</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 26 Mar 2017 10:20:55 +0100</lastBuildDate><atom:link href="https://gruberbastian.com/tags/iot/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Get started with BeagleBone</title>
+      <link>https://gruberbastian.com/posts/go-beaglebone/</link>
+      <pubDate>Sun, 26 Mar 2017 10:20:55 +0100</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/go-beaglebone/</guid>
+      <description>I have to admit, the power of IoT did not yet reach my little nerd life here in Berlin. Therefore, I took an effort this year and went to an IoT Hackathon. It was a fun weekend, I think there were just 5 developers and the rest of the crowd came from a social and educational background. Which made it even more fun and interesting.
+Anyway, since this weekend I ordered a RaspberryPi and tried to do something useful with it.</description>
+    </item>
+    
+  </channel>
+</rss>

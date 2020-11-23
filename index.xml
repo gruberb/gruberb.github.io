@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Bastian Gruber</title>
@@ -6,11 +6,7 @@
     <description>Recent content on Bastian Gruber</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 23 Nov 2020 08:56:38 +0000</lastBuildDate>
-    
-	<atom:link href="https://gruberbastian.com/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Mon, 23 Nov 2020 08:56:38 +0000</lastBuildDate><atom:link href="https://gruberbastian.com/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Consuming, learning and operating on first principles</title>
       <link>https://gruberbastian.com/posts/first_principles/</link>
@@ -67,7 +63,7 @@ The lust for learning a new programming language often times comes from the shee
       <pubDate>Mon, 15 Apr 2019 09:51:55 +0100</pubDate>
       
       <guid>https://gruberbastian.com/posts/rust_api/</guid>
-      <description>Content  HTTP Requests POST/PUT/PATCH/DELETE are special The Job of a Framework Creating an API spec Crafting the API Input Validation Summary  APIs are the bread and butter of how a modern and fast-paced web environment. Frontend application, other web services and IoT devices need to be able to talk to your service. API endpoints are like doors to which you decide what comes in and in which format.</description>
+      <description>Content  HTTP Requests POST/PUT/PATCH/DELETE are special The Job of a Framework Creating an API spec Crafting the API Input Validation Summary   APIs are the bread and butter of how a modern and fast-paced web environment. Frontend application, other web services and IoT devices need to be able to talk to your service. API endpoints are like doors to which you decide what comes in and in which format.</description>
     </item>
     
     <item>
@@ -88,7 +84,7 @@ This concept was first needed on the kernel level, because you want to be able t
       
       <guid>https://gruberbastian.com/posts/deploy_rust/</guid>
       <description>You can find the Introduction to web programming in Rust over here
- Update 08.07.2019: tide 0.2.0
+  Update 08.07.2019: tide 0.2.0
 This series has 3 goals  Show the obstacles new developers will face when programming in Rust but also its advantages when it comes to the specific topic (this time: Deployments). Show different options for web development in Rust. Always have an updated application in production afterwards.  Number three is super important for me.</description>
     </item>
     
@@ -139,7 +135,7 @@ The dilemma of our privilidged and comfortable lifes as software engineers is:</
       <pubDate>Mon, 30 Oct 2017 10:37:04 +0200</pubDate>
       
       <guid>https://gruberbastian.com/posts/openmachine/</guid>
-      <description>I am taking a break from the working world at the moment, and just finished travelling through North America for the last 3 months. Being back at my partner&amp;rsquo;s parents&amp;rsquo; home in Canada, I browsed through the typical tech news at the end of a year. New iPhones here, better Google Pixels there. But, I am trying to apply a new rule for myself: Only buy something new if you have needed it every day for the past 30 days (with some minor exceptions of course).</description>
+      <description>I am taking a break from the working world at the moment, and just finished travelling through North America for the last 3 months. Being back at my partner&amp;rsquo;s parents&#39; home in Canada, I browsed through the typical tech news at the end of a year. New iPhones here, better Google Pixels there. But, I am trying to apply a new rule for myself: Only buy something new if you have needed it every day for the past 30 days (with some minor exceptions of course).</description>
     </item>
     
     <item>
@@ -200,7 +196,7 @@ You can see all the hipsters in big cities are trying to do the same: eat locall
       <pubDate>Thu, 01 Dec 2016 14:37:04 +0200</pubDate>
       
       <guid>https://gruberbastian.com/posts/usedum/</guid>
-      <description>Hectic and grey Berlin is vibrant, always “on” and full of inspirational people. If you are looking for something, you will find it. But, what makes the city such a astounding place to live in, is also the reason why it is draining your energy and emotions. Not alone this, but the architecture of big and wide streets and sometimes narrow and huge houses are great in the summer, but aweful to look at in Winter.</description>
+      <description></description>
     </item>
     
     <item>
@@ -209,7 +205,7 @@ You can see all the hipsters in big cities are trying to do the same: eat locall
       <pubDate>Mon, 03 Oct 2016 16:37:27 +0200</pubDate>
       
       <guid>https://gruberbastian.com/posts/about/</guid>
-      <description>That&amp;rsquo;s me, Bastian, a passionate software developer. I am mainly working with Rust to create services for the web. Next to that I am writing for several tech magazines and publish articles on my own. Every now and then I get interviewed as well.
+      <description>That&amp;rsquo;s me, Bastian, a passionate software developer. I am mainly working with Rust to create services for the web. Next to that I am writing for several tech magazines and publish articles on my own. Every now and then I get interviewedas well.
 My Open Source contributions can be found mostly at GitHub, whereas my own projects are hosted at sourcehut. A detailed CV with projects I&amp;rsquo;ve worked on is on my LinkedIn profile.</description>
     </item>
     
@@ -219,9 +215,9 @@ My Open Source contributions can be found mostly at GitHub, whereas my own proje
       <pubDate>Fri, 03 Aug 2012 14:37:04 +0200</pubDate>
       
       <guid>https://gruberbastian.com/posts/interviews/</guid>
-      <description>How and why to be a freelancer [german - 2019] An interview with my friends at Uplink, a german-wide freelancer community. This interview is in text form.
-Why learn Rust or any new programming language [english - 2019] I had an interview with Coder Society about the state of Rust and why it will play an important part in many companies toolchain in the future.
-  Quo Vadis iOS [german - 2013] A second interview for Mac-TV.</description>
+      <description>How and why to be a freelancer [german - 2019] An interviewwith my friends at Uplink, a german-wide freelancer community. This interview is in text form.
+ Why learn Rust or any new programming language [english - 2019] I had an interview with Coder Society about the state of Rust and why it will play an important part in many companies toolchain in the future.
+ Quo Vadis iOS [german - 2013] A second interview for Mac-TV.</description>
     </item>
     
   </channel>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on Bastian Gruber</title>
+    <link>https://gruberbastian.com/categories/</link>
+    <description>Recent content in Categories on Bastian Gruber</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 30 Dec 2019 14:37:04 +0200</lastBuildDate><atom:link href="https://gruberbastian.com/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>work</title>
+      <link>https://gruberbastian.com/categories/work/</link>
+      <pubDate>Mon, 30 Dec 2019 14:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/categories/work/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>learning</title>
+      <link>https://gruberbastian.com/categories/learning/</link>
+      <pubDate>Mon, 01 Oct 2018 08:00:00 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/categories/learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DIY</title>
+      <link>https://gruberbastian.com/categories/diy/</link>
+      <pubDate>Mon, 30 Oct 2017 10:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/categories/diy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Coding</title>
+      <link>https://gruberbastian.com/categories/coding/</link>
+      <pubDate>Thu, 04 May 2017 18:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/categories/coding/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DevOps</title>
+      <link>https://gruberbastian.com/categories/devops/</link>
+      <pubDate>Mon, 12 Dec 2016 20:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/categories/devops/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Travelling</title>
+      <link>https://gruberbastian.com/categories/travelling/</link>
+      <pubDate>Thu, 01 Dec 2016 14:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/categories/travelling/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Development</title>
+      <link>https://gruberbastian.com/categories/development/</link>
+      <pubDate>Mon, 03 Oct 2016 16:37:27 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/categories/development/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

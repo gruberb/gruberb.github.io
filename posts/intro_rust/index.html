@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.78.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Intro to Rust for NodeJS Developers &middot; Bastian Gruber</title>
+
+  
+  <link rel="stylesheet" href="https://gruberbastian.com/css/print.css" media="print">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/poole.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/syntax.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/hyde.css">
+  <link href="https://fonts.googleapis.com/css?family=Asap|Roboto+Mono&display=swap" rel="stylesheet">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Bastian Gruber" />
+</head>
+
+  <body class="theme-base-08 ">
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://gruberbastian.com/"><h1>Bastian Gruber</h1></a>
+      <p class="lead">
+       Software &#43; Philosophy 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="https://gruberbastian.com/">Home</a> </li>
+      <li><a href="/posts/about/"> About </a></li><li><a href="/posts/interviews/"> Interviews </a></li><li><a href="/posts/talks/"> Talks </a></li>
+    </ul>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</div>
+
+    <div class="content container">
+    <div class="post">
+  <h1>Intro to Rust for NodeJS Developers</h1>
+  <span class="post-date">Mon, Mar 25, 2019</span>
+  <blockquote>
+<p>You can find the second article in this series (&ldquo;deploy your first Rust app&rdquo;) <a href="https://gruberbastian.com/posts/deploy_rust">over here</a>.</p>
+</blockquote>
+<p>Rust is different. You can pick up Python or Ruby over the weekend, create a first CRUD application and be happy with the results.</p>
+<p>With Rust… with Rust you will struggle to pass a String to a different method, change and return it. You then will order the Rust book, see its size, <em>sigh</em> and get started.</p>
+<p>After a few weeks of fighting through the book after work, you give up and wait until someone else creates an easy-to-follow tutorial.</p>
+<h3 id="here-is-your-easy-tutorial">Here is your “easy” tutorial</h3>
+<p>I struggled with the same problems. Life circumstances however gave me a few months time on my hands to really focus on Rust.</p>
+<p>What follows is a first overview, concept, and paths to follow. In the coming weeks and months, I’ll publish a series of articles to help you to get from concept to product.</p>
+<h3 id="nodejs-vs-rust">NodeJS vs Rust</h3>
+<p>After installing them (I chose brew for macOS in this example, the method doesn’t matter), the underlying stack looks different. NodeJS needs V8, the runtime engine from Google, and bindings to the JavaScript library to run JavaScript code.</p>
+<p>Rust depends almost completely on Rust itself. Just the compiler is using <code>llvm</code> <a href="https://llvm.org/">libraries</a>, which are written in C and C++.</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/rust.png" alt="os_difference_node_rust"></p>
+<h3 id="how-much-web-is-in-rust">How much &ldquo;web&rdquo; is in Rust?</h3>
+<p>It was and is a design decision <a href="https://users.rust-lang.org/t/announcing-the-http-crate/12123">not to include a standard http library</a> in Rust. The OSI layer is therefore covered differently:</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/rustnode.png" alt="osi_layer_rust_node"></p>
+<p>Node covers the whole stack, and offers with Koa and Express, two well-known and “rock-solid” web frameworks which help you to build applications on top of HTTP.</p>
+<p>On the Rust side of things, just <a href="https://doc.rust-lang.org/std/net/struct.TcpStream.html">TCP</a> is implemented in the Rust Core. The current web frameworks (<a href="https://actix.rs/actix/actix/">actix</a> and <a href="https://rocket.rs/">rocket</a>) are implementing everything up until HTTP though. So you don’t need to care where this is coming from.</p>
+<p>If you want to use pure HTTP calls without any larger framework, you can install “crates” (equivalent to npm packages in the Node world) which implement the HTTP protocol (like <a href="https://github.com/hyperium/hyper">hyper</a> and <a href="https://github.com/tiny-http/tiny-http">tiny_http</a>).</p>
+<h3 id="npm-vs-cargo">npm vs cargo</h3>
+<p>Node is using npm for its package management:</p>
+<ul>
+<li><code>npm install</code> is installing dependencies</li>
+<li><code>npm run xyz</code> is executing scripts inside the <code>package.json</code></li>
+</ul>
+<p>On the Rust side, <code>cargo</code> is <a href="https://doc.rust-lang.org/cargo/">handling everything related to your project</a>:</p>
+<ul>
+<li><code>cargo new NAME --bin</code> is creating an application</li>
+<li><code>cargo new NAME --lib</code> to create a library</li>
+<li><code>cargo run</code> is executing the code</li>
+<li><code>cargo build</code> is creating an executable</li>
+<li><code>cargo test</code> is running all tests inside the project</li>
+</ul>
+<p>There is an <a href="https://github.com/rust-lang/cargo/issues/5586">open PR</a> to add <code>cargo add</code> to install dependencies. Right now you have to add them by hand to your <code>Cargo.toml</code> file. As you see, you don’t need to include scripts in a <code>package.json</code> to run tests or build and test your application.</p>
+<blockquote>
+<p>Mindset change: Cargo is fetching the packages after <code>cargo run</code>, and just if the version changed. So the first time it will fetch all packages, the second time just when a change in the version number happened. Unlike <code>npm i</code> which fetches the packages right away, and will add it to the <code>package.json</code> with the <code>save</code> notation.</p>
+</blockquote>
+<h3 id="ecosystem">Ecosystem</h3>
+<p>Node is not successful for no reason. The ecosystem is rich and flourishing. Rust is still developing, but has already many great “crates”. The website <a href="http://www.arewewebyet.org/">arewewebyet.org</a> is tracking the progress and showing you interesting packages in the Rust world.</p>
+<p>There is also an attempt to create an official Rust Web Framework, called <a href="https://github.com/rustasync/tide">Tide</a>. It is already pretty mature and can be used for side projects. Feel free to contribute and help craft a great environment for web development in Rust.</p>
+<h3 id="asnyc-programming-aka-promises-aka-futures">Asnyc programming aka Promises aka Futures</h3>
+<p>Nodes killer feature are Promises. Although not always easy to understand and handle, Promises and the event loop are what makes Node so lucrative.</p>
+<p>Rust is also implementing an asynchronous mechanism, which are not yet in the final version. They are called <a href="https://github.com/rust-lang-nursery/futures-rs">Futures</a>. A library called <a href="https://tokio.rs/">Tokio</a> is already offering an asynchronous run time. You can track the progress on asynchronous programming in Rust over at <a href="https://areweasyncyet.rs/">areweasyncyet</a>.</p>
+<h3 id="how-to-get-started">How to get started?</h3>
+<ol>
+<li>Install Rust: <code>curl https://sh.rustup.rs -sSf | sh</code></li>
+<li>Create a new project: <code>cargo new web-app --bin</code></li>
+<li><code>cd web-app</code></li>
+</ol>
+<p>Now you can choose your web framework of choice. You can either start with <a href="https://rocket.rs/">rocket</a> or <a href="https://actix.rs/">actix</a>. You can follow the tutorials on the website to get a first web application running.</p>
+<h3 id="heads-up-undefined-borrowing-and-types">Heads up: undefined, borrowing and types</h3>
+<p>To not to get frustrated until my next post, here are the main four things about Rust you will have to get used to (which are quite awesome after a while).</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/code.png" alt="updated_reqwest_example"></p>
+<ol>
+<li>There is no undefined. Rust has no real null value. This is a feature. Rust has a type called <a href="https://doc.rust-lang.org/std/option/index.html">Option</a>, which encapsulates either the return value or None. In this case, we use the <a href="https://doc.rust-lang.org/std/result/#result-and-option">Result</a> type to return a value. You could, instead of returning a String, return an Option which might have a String value, or None if the website we are fetching from doesn’t contain any text. An easy solution, which you should not use in production, is to <code>.unwrap()</code> results to get the String out of the encapsulation. <a href="https://doc.rust-lang.org/std/result/#result-and-option">Homework: Try to check if the GET request errored and return an Error in this case instead of Ok().</a></li>
+<li>You must have heard about <a href="https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html">borrowing</a>. In short: Every assignment (=) to a non trivial type (everything which doesn’t have a fixed size) moves the ownership over. The method <code>fetch_text()</code> is not taking ownership over the url but just using a reference to it (via the <code>&amp;</code> ). <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2018&amp;gist=d7527a2b8570393dd70c2083172d621a">Homework: Figure out why this code here fails and how to solve it.</a></li>
+<li>You always have to know which type is returned from a method. In this example, our HTTP crate <code>reqwest</code> is returning a Response struct (type) which implements certain methods. The documentation is, as with so many crates, excellent. <a href="https://docs.rs/reqwest/0.9.11/reqwest/struct.Response.html#method.text">So have a look here</a>.</li>
+<li>You don’t have to type <code>return</code> to return a value from a method. Just don’t put a <code>;</code> at the end of a statement and this becomes your return value.</li>
+</ol>
+<p>Use this example to play around, see where you can get errors and learn to fix them.</p>
+<h3 id="is-this-all">Is this all?</h3>
+<p>Two opinions:</p>
+<ul>
+<li>“Sadly no!”</li>
+<li>“No, but that’s a good thing!”</li>
+</ul>
+<p>You actually have to learn a decent amount of Rust to get started. This is what I am here for. In the next few days, weeks and months I will cover the basics up until creating a solid web application.</p>
+<p>Up until then, I can recommend the <a href="https://exercism.io/my/tracks/rust">Rust track on Exercism.io</a> and the Rust Book which you can find also in a paper version at your local book store or at Amazon.</p>
+
+</div>
+
+
+    </div>
+
+    
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.78.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>The beauty of DevOps &middot; Bastian Gruber</title>
+
+  
+  <link rel="stylesheet" href="https://gruberbastian.com/css/print.css" media="print">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/poole.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/syntax.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/hyde.css">
+  <link href="https://fonts.googleapis.com/css?family=Asap|Roboto+Mono&display=swap" rel="stylesheet">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Bastian Gruber" />
+</head>
+
+  <body class="theme-base-08 ">
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://gruberbastian.com/"><h1>Bastian Gruber</h1></a>
+      <p class="lead">
+       Software &#43; Philosophy 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="https://gruberbastian.com/">Home</a> </li>
+      <li><a href="/posts/about/"> About </a></li><li><a href="/posts/interviews/"> Interviews </a></li><li><a href="/posts/talks/"> Talks </a></li>
+    </ul>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</div>
+
+    <div class="content container">
+    <div class="post">
+  <h1>The beauty of DevOps</h1>
+  <span class="post-date">Mon, Dec 12, 2016</span>
+  <p><!-- raw HTML omitted --></p>
+<p>For my latest client, I got hired as a Fullstack JavaScript developer, plus DevOps, plus Frontend. The project is to rebuild the old PHP codebase onto a new stack containing Node, Angular and Microservices. The deployment is done via Docker and DockerCloud, hosted partly on AWS servers. As complicated as it sounds, new projects don&rsquo;t have the nitty gritty problems legacy systems have. I think what you have to bring to such a project is a broad understanding of each technology and how they interact together.</p>
+<p>My previous position was as a Senior Frontend Developer, working with Angular 1 and 2. There, you have to have a deep understanding of the framework, and how to get the latest percentages of performance out. As well as how to constantly refactor an ever growing codebase. So sometimes people think that to setup the whole stack, they have to have a really deep understanding of every technology. But sometimes, it&rsquo;s just not needed. You can set up a MongoDB database for a certain microservice, just knowing this form of database works fine. Later on, you can hire a Mongo specialist or look deeper into how to scale and improve performance with this technology.</p>
+<p>This gives you a lot of freedom, but also responsibility. What I deal with at the moment, are the so called &ldquo;DevOps&rdquo;. Since my last project was implementing NodeJS patterns and structure, I sort of feel the beauty of the pure analytical work of setting up and monitoring services. There is no big guessing or &ldquo;let&rsquo;s see&rdquo; factor. It&rsquo;s different approach then pure programming. Finally, you have to have a clear picture of which service should talk to which, how they should give feedback and how and with which tools you measure performance.</p>
+<p>Again, all the little details can be nasty and hard, but for the first few days after this shift in perspective, you have the feeling of power and overview of the system. In return, it helps to understand when a service should respond with critical feedback, and what this feedback should look like. Sometimes, Sometimes I think, starting from this perspective can help decide which service should contain which logic, and how big a certain microservice should get.</p>
+<p>As a front end developer, I appreciate starting the project with a clear UX/UI guideline and idea. From a backend developer perspective, I now appreciate the DevOps-First perspective. Once you know how the system should respond in different situations, than you know you how to structure your codebase.</p>
+<p>Implementing a monitoring microservice, which receives important messages from other services, sends them to an InfluxDB, and Grafana takes this data to display the current affairs. Seeing how well and nicely this all plays out gives every developer a warm heart. What more can you ask for just before Christmas?</p>
+
+</div>
+
+
+    </div>
+
+    
+  </body>
+</html>

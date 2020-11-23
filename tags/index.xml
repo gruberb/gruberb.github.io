@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Bastian Gruber</title>
+    <link>https://gruberbastian.com/tags/</link>
+    <description>Recent content in Tags on Bastian Gruber</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 23 Nov 2020 08:56:38 +0000</lastBuildDate><atom:link href="https://gruberbastian.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>life</title>
+      <link>https://gruberbastian.com/tags/life/</link>
+      <pubDate>Mon, 23 Nov 2020 08:56:38 +0000</pubDate>
+      
+      <guid>https://gruberbastian.com/tags/life/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>work</title>
+      <link>https://gruberbastian.com/tags/work/</link>
+      <pubDate>Mon, 30 Dec 2019 14:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/tags/work/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>coding</title>
+      <link>https://gruberbastian.com/tags/coding/</link>
+      <pubDate>Tue, 11 Jun 2019 09:51:55 +0100</pubDate>
+      
+      <guid>https://gruberbastian.com/tags/coding/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rust</title>
+      <link>https://gruberbastian.com/tags/rust/</link>
+      <pubDate>Thu, 02 May 2019 20:20:00 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/tags/rust/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>DIY</title>
+      <link>https://gruberbastian.com/tags/diy/</link>
+      <pubDate>Mon, 30 Oct 2017 10:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/tags/diy/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>tools</title>
+      <link>https://gruberbastian.com/tags/tools/</link>
+      <pubDate>Wed, 12 Apr 2017 10:40:41 +0100</pubDate>
+      
+      <guid>https://gruberbastian.com/tags/tools/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>iot</title>
+      <link>https://gruberbastian.com/tags/iot/</link>
+      <pubDate>Sun, 26 Mar 2017 10:20:55 +0100</pubDate>
+      
+      <guid>https://gruberbastian.com/tags/iot/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>devops</title>
+      <link>https://gruberbastian.com/tags/devops/</link>
+      <pubDate>Mon, 12 Dec 2016 20:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/tags/devops/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>travelling</title>
+      <link>https://gruberbastian.com/tags/travelling/</link>
+      <pubDate>Thu, 01 Dec 2016 14:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/tags/travelling/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.78.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Explained: Futures in Rust for Web Development &middot; Bastian Gruber</title>
+
+  
+  <link rel="stylesheet" href="https://gruberbastian.com/css/print.css" media="print">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/poole.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/syntax.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/hyde.css">
+  <link href="https://fonts.googleapis.com/css?family=Asap|Roboto+Mono&display=swap" rel="stylesheet">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Bastian Gruber" />
+</head>
+
+  <body class="theme-base-08 ">
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://gruberbastian.com/"><h1>Bastian Gruber</h1></a>
+      <p class="lead">
+       Software &#43; Philosophy 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="https://gruberbastian.com/">Home</a> </li>
+      <li><a href="/posts/about/"> About </a></li><li><a href="/posts/interviews/"> Interviews </a></li><li><a href="/posts/talks/"> Talks </a></li>
+    </ul>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</div>
+
+    <div class="content container">
+    <div class="post">
+  <h1>Explained: Futures in Rust for Web Development</h1>
+  <span class="post-date">Thu, May 2, 2019</span>
+  <blockquote>
+<p>As I explained <a href="https://gruberbastian.com/posts/rust_async">in one of my last articles</a>, Futures are one part of an asynchrounous environment. We need Syntax, Type and a Runtime to be able to run code in an non blocking way. Futures are the type part of the Rust async story.</p>
+</blockquote>
+<h1 id="content">Content</h1>
+<ol>
+<li><a href="#the-two-perspectives">The two perspectives</a></li>
+<li><a href="#what-actually-is-a-raw-future-endraw-">What actually is a Future?</a></li>
+<li><a href="#when-to-use-futures">When to use Futures?</a></li>
+<li><a href="#why-does-using-futures-save-time-%E2%9B%91">Why does using Futures save time?</a></li>
+<li><a href="#how-to-use-futures-%E2%9B%91">How to use Futures?</a></li>
+<li><a href="#whats-so-different-or-hard-about-futures-%E2%9B%91">What&rsquo;s so different or hard about Futures?</a></li>
+<li><a href="#how-to-execute-more-than-one-raw-future-endraw-">How to execute more than one Future?</a></li>
+<li><a href="#what-is-the-future-of-futures-%E2%9B%91">What is the future of Futures?</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+<h2 id="the-two-perspectives">The two perspectives</h2>
+<p>If you are coming from NodeJS, Futures in Rust don&rsquo;t make much sense. In NodeJS, everything happens asynchronously. Therefore for you to be able to say &ldquo;Hey, I really need to wait for the answer for this GET HTTP call&rdquo;, you are putting<code>.then()</code> on a <code>Promise</code>, so you can make sure you just execute the code inside the <code>.then()</code> when the HTTP call is finished.</p>
+<p>In Rust, everything is blocking and synchronous by default, so you might ask yourself: &ldquo;Why bothering with the complexity, that&rsquo;s exactly what I wanted in the first place!&rdquo;</p>
+<p>Rust is a Systems Programming Language. So for you to craft applications in Rust, you always have to wear two hats. The &ldquo;Systems Hat&rdquo;(⛑) and the &ldquo;Programmer Hat&rdquo;(🎩). The Systems Hat(⛑) lets you consider what is actually best from a machine point of view, the Programmer Hat(🎩) takes care of the syntax and how a software is written.</p>
+<p>If you are coming from NodeJS, the Systems Hat is taken care of from Googles V8 runtime, so you can focus on syntax. In Rust you get help from crates, although you need to make certain decisions yourself.</p>
+<p>The Systems Hat is the reason why we want to use Futures. Therefore, you need to handle Futures as a type in your application, and afterwards make sure that you use a runtime to actually execute them. If you are consuming Futures (for example when a crate you are using is returning a <code>Future</code>), you have to understand where the data comes from. In this case, the Programmer Hat <strong>and</strong> the Systems Hat are needed.</p>
+<h2 id="what-actually-is-a-future-">What actually is a <code>Future</code>? 🎩</h2>
+<p>A <code>Future</code> in Rust is actually a <code>trait</code>, which if you want to implement it, looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">trait</span> Future {
+    <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Item</span>;
+    <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Error</span>;
+
+    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">poll</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self) -&gt; <span style="color:#a6e22e">Poll</span><span style="color:#f92672">&lt;</span>Self::Item, Self::Error<span style="color:#f92672">&gt;</span>;
+}
+</code></pre></div>
+<p>The <code>poll</code> method is important. This will get called from your runtime and will return <a href="https://docs.rs/futures/0.1/futures/enum.Async.html"><code>Async::Ready</code> or <code>Async::NotReady</code></a>.</p>
+<p>If you want to fetch different magazine issues from a remote location or from the file system, you can create and return your own <code>Future</code> for that:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Magazine</span> {
+    issues: Vec<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">u8</span><span style="color:#f92672">&gt;</span>
+}
+</code></pre></div>
+<p>and <code>impl</code> the <code>Future</code> trait on it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">impl</span> Future <span style="color:#66d9ef">for</span> Magazine {
+    <span style="color:#75715e">// here we return a single byte
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Item</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">u8</span>;
+    <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Error</span> <span style="color:#f92672">=</span> io::Error;
+
+    <span style="color:#75715e">// this method is getting called from the runtime. Everytime we can read
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// a byte into the buffer, we return `Async::Ready`
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">poll</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self) -&gt; <span style="color:#a6e22e">Poll</span><span style="color:#f92672">&lt;</span>Self::Item, Self::Error<span style="color:#f92672">&gt;</span> {
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> buffer <span style="color:#f92672">=</span> [<span style="color:#ae81ff">0</span>;<span style="color:#ae81ff">1</span>];
+        <span style="color:#66d9ef">match</span> self.<span style="color:#ae81ff">0.</span>poll_read(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> buf) {
+            Ok(Async::Ready(_num_bytes_read)) <span style="color:#f92672">=&gt;</span> Ok(Async::Ready(buffer[<span style="color:#ae81ff">0</span>])),
+            Ok(Async::NotReady) <span style="color:#f92672">=&gt;</span> Ok(Async::NotReady),
+            Err(e) <span style="color:#f92672">=&gt;</span> Err(e)
+        }
+    }
+}
+</code></pre></div>
+<p>The runtime will fill the buffer with the information you are asking for, and the <code>Future</code> will return <code>Async::Ready</code> once the buffer is full.</p>
+<p>This is the basic essence of a <code>Future</code> in Rust.</p>
+<h2 id="when-to-use-futures-">When to use Futures? 🎩</h2>
+<blockquote>
+<p>Implementing the <code>Future</code> trait for a type is your way of telling the machine &ldquo;Hey, this might take a while, consider this when executing this part of the code&rdquo;.</p>
+</blockquote>
+<p>Rust is a synchronous language. Everything happens line by line, and waits until each result is processed. This is not a problem until you want to do tasks which take longer time to process.</p>
+<p>If you create a micro service with Rust, and you need to fetch three other micro services for some data, and afterwards you merge the data and write it into a database, that&rsquo;s a use case where you want to consider using Futures.</p>
+<h2 id="why-does-using-futures-save-time-">Why does using Futures save time? ⛑</h2>
+<p>In our test scenario, each of these HTTP calls could take, lets say, 1 Minute. Instead of now waiting 3 Minutes for all of the calls to finish, you want to run them in parallel so you still just wait 1 Minute instead of 3.</p>
+<p>Therefore you create three methods which return a <code>Future</code> each, collect them, and then pass them on to a runtime (to tokio via <code>tokio::run</code> for example).</p>
+<h2 id="how-to-use-futures---">How to use Futures? 🎩 + ⛑</h2>
+<p>If a crate returns a <code>Future</code>, you can use <a href="https://docs.rs/futures/0.1.26/futures/future/struct.AndThen.html"><code>.and_then()</code></a> to work with the result once the <code>Future</code> is ready. Using <a href="https://docs.rs/futures/0.1.26/futures/future/struct.Map.html"><code>.map()</code></a> on a <code>Future</code> lets you alter the type of the <code>Future</code>.</p>
+<p>Inside the async Rust world, we have to take care of different types of data. Instead of using Strings and Numbers for example, we deal with streams of values. You will most likely deal with Streams.</p>
+<p>A <code>Stream</code> is an extension of a Future. Where a Future is about producing a single value, a <code>Stream</code> is yielding values as long as they are present.</p>
+<ul>
+<li><a href="https://docs.rs/futures/0.1.26/futures/stream/index.html">Stream</a>: A <code>Stream</code> is, like a <code>Future</code>, a trait you can <code>impl</code> on a type. This lets you iterate over the return values (which are <code>Some(_)</code> or <code>None</code>).</li>
+<li><a href="https://docs.rs/futures/0.1.26/futures/sink/index.html">Sink</a>: For writing data continuously (in an asynchronous way) to either a socket or to a file system</li>
+</ul>
+<p>So Streams are for reading data, Sinks are for writing them. We have two types of Streams in our web ecosystem:</p>
+<ul>
+<li>Stream of Bytes (like HTTP bodies or TCP streams)</li>
+<li>Stream of Messages (like WebSocket Frames or UDP Packets), where each message has a fixed size</li>
+</ul>
+<h3 id="code-example">Code example</h3>
+<p>Lets look at a use case where a crate you are using returns a <code>Future</code>. When doing HTTP calls, <code>reqwest</code> is a good example. On the <code>Future</code> returned from <code>reqwest</code>, you can use <code>.and_then()</code> to process the results (🎩):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">// We have to use &#34;r#&#34; before &#34;async&#34; because &#34;async&#34; is a reserved keyword.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> reqwest::r#async::Client;
+
+<span style="color:#75715e">// The return type has to be `Future&lt;Item=(), Error=()&gt;` to be able
+</span><span style="color:#75715e">// to use `tokio::run`. 
+</span><span style="color:#75715e">// If it has a different type, you have to use `tokio::block_on`
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">fetch_data</span>() -&gt; <span style="color:#a6e22e">impl</span> Future<span style="color:#f92672">&lt;</span>Item<span style="color:#f92672">=</span>(), Error<span style="color:#f92672">=</span>()<span style="color:#f92672">&gt;</span> {
+    Client::new()
+        .get(url)
+        .send()
+        .and_then(<span style="color:#f92672">|</span>res<span style="color:#f92672">|</span> {
+            res.into_body().concat2()
+        })
+        .map_err(<span style="color:#f92672">|</span>err<span style="color:#f92672">|</span> println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;request error: {}&#34;</span>, err))
+        .map(<span style="color:#f92672">|</span>body<span style="color:#f92672">|</span> {
+            <span style="color:#75715e">// here you can use the body to write it to a file
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// or return it via Ok()
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// If you return it via for example Ok(users)
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// then you need to adjust the return type in impl Future&lt;Item=TYPE
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// Examples can be found here: 
+</span><span style="color:#75715e"></span>            <span style="color:#75715e">// https://github.com/gruberb/futures_playground
+</span><span style="color:#75715e"></span>
+            <span style="color:#75715e">// For now, lets just turn the body into a Vector
+</span><span style="color:#75715e"></span>            <span style="color:#66d9ef">let</span> v <span style="color:#f92672">=</span> body.to_vec();
+        })
+}
+</code></pre></div>
+<p>Once you created the method which returns a <code>Future</code> (<code>fetch_data()</code>), <strong>you have to pass it on to a runtime</strong> like tokio (⛑):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">tokio::run(fetch_data());
+</code></pre></div>
+<h3 id="high-level-overview">High Level Overview</h3>
+<ol>
+<li>You receive a <code>Future</code> from an external crate</li>
+<li>A <code>Future</code> is likely to return a <code>Stream</code> of values, so you have to form this <code>Stream</code> into a type you can work with in a synchronous way (like a Vector or String)</li>
+<li>You return the whole Future from a method via <code>-&gt; impl Future&lt;Item=(), Error=()&gt;</code>, where the braces <code>()</code> are placeholders for the actual type you want to return</li>
+<li>You pass the method on to a runtime like tokio via <code>tokio::run(method())</code></li>
+<li>The <code>run</code>​ call will start the runtime, set up the required resources and then put this future on a threadpool and start polling your future</li>
+<li>It will then try to pass the work on to the operating system</li>
+<li>Each time the runtime polls your <code>Future</code>, if the underlying I/O resource your <code>Future</code> is waiting on is not ready, it will return <code>NotReady​</code>. The runtime sees this <code>NotReady​</code> return value and puts your <code>Future</code> to sleep</li>
+<li>Once an event from the underlying I/O resource comes, the runtime checks if this I/O resource is associated with your <code>Future</code>, and starts polling again. This time, your <code>Future</code> will be able to return a <code>Ready</code>​ with a value, since the underlying I/O resource has provided a value</li>
+<li>The runtime will then set the status of the <code>Future</code> to ready and will process the <code>.and_then()</code> part of the code</li>
+</ol>
+<p>The <code>Future</code> is getting, unlike in NodeJS, executed via <code>tokio::run</code> and not before. In Node, as soon as you write a <code>Promise</code>, the object is being returned immediately.</p>
+<h2 id="whats-so-different-or-hard-about-futures-">What&rsquo;s so different or hard about Futures? ⛑</h2>
+<p>Lets walk through our example above:</p>
+<ul>
+<li>
+<p>We create a new client with <code>Client::new()</code> and <code>.send()</code> our request</p>
+</li>
+<li>
+<p>We will get a <a href="https://github.com/seanmonstar/reqwest/blob/master/src/async_impl/response.rs#L24"><code>Response</code></a> back:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">Response</span> {
+    status: <span style="color:#a6e22e">StatusCode</span>,
+    headers: <span style="color:#a6e22e">HeaderMap</span>,
+    url: Box<span style="color:#f92672">&lt;</span>Url<span style="color:#f92672">&gt;</span>,
+    body: <span style="color:#a6e22e">Decoder</span>,
+    ...
+}
+</code></pre></div></p>
+</li>
+<li>
+<p>The body itself is a Decoder, which can be turned into a <code>Body</code> via <a href="https://github.com/seanmonstar/reqwest/blob/master/src/async_impl/response.rs#L113"><code>.into_body()</code></a>.</p>
+</li>
+<li>
+<p><code>Body</code> itself <a href="https://github.com/seanmonstar/reqwest/blob/master/src/async_impl/decoder.rs#L155">implements</a> a <a href="https://docs.rs/futures/0.1.26/futures/stream/trait.Stream.html">Stream</a> (as mentioned earlier).</p>
+</li>
+<li>
+<p>Now we can look into the Futures API from Rust and find out: We can turn a Stream of Bytes into single item via <a href="https://docs.rs/futures/0.1.26/futures/stream/struct.Concat2.html"><code>.concat2()</code></a>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">...
+        .and_then(<span style="color:#f92672">|</span>res<span style="color:#f92672">|</span> {
+            res.into_body().concat2()
+        })
+...
+</code></pre></div></p>
+</li>
+<li>
+<p>We use this single item in the <code>.map()</code> part as <code>body</code></p>
+</li>
+<li>
+<p>With the help of your code editor, you will find out that this <code>body</code> is actually a <a href="https://github.com/hyperium/hyper/blob/master/src/body/chunk.rs"><code>Chunk</code></a>, returned from the library <a href="https://github.com/hyperium/hyper"><code>Hyper</code></a></p>
+</li>
+<li>
+<p>We can turn this <code>Chunk</code> now into a <a href="https://doc.rust-lang.org/std/vec/struct.Vec.html"><code>Vector</code></a></p>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">...
+        .map(<span style="color:#f92672">|</span>body<span style="color:#f92672">|</span> {
+            <span style="color:#66d9ef">let</span> v <span style="color:#f92672">=</span> body.to_vec();
+            <span style="color:#75715e">// do whatever with v
+</span><span style="color:#75715e"></span>        })
+...
+</code></pre></div>
+<p>From then on, we are back in &ldquo;normal&rdquo; Rust land and can forget what just happened 🙃.</p>
+<blockquote>
+<p>You can find the full example in this <a href="https://github.com/gruberb/futures_playground">GitHub repository</a>. There I receive a <code>JSON</code> and write it to a file.</p>
+</blockquote>
+<p>This is one of the reasons why dealing with Futures is so hard in the beginning. You have to think much lower level than for example in NodeJS. In addition, the <code>async/await</code> syntax <a href="https://internals.rust-lang.org/t/await-syntax-discussion-summary/9914">is not final yet</a>, which leads to much more boiler code.</p>
+<p>These mental steps help you to not get lost when dealing with Futures:</p>
+<ol>
+<li>What&rsquo;s the return type or value I am getting from this library?</li>
+<li>How can I access the <code>Stream</code> of values on this response?</li>
+<li>What will the library turn this <code>Stream</code> into when I collect all the values via <code>.concat2()</code>?</li>
+<li>How can I turn this new type into a Vector or another Rust std format so I can pass it on to synchronous methods?</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/futures_01.png" alt="futures_how_they_work"></p>
+<p><strong>Basically, you always want to figure out how to access the stream of values, collect them, and then process the resulting object.</strong></p>
+<h2 id="how-to-execute-more-than-one-future-">How to execute more than one <code>Future</code>? 🎩</h2>
+<p>Generally you want to collect your values as <code>Streams</code>, so that for each item you get over a <code>Stream</code>, you can spawn off a new <code>Future</code> to handle it.</p>
+<p>The Rust Futures API has a method called <a href="https://docs.rs/futures/0.1.26/futures/stream/futures_unordered/struct.FuturesUnordered.html"><code>FuturesUnordered</code></a> which you can use to add more than one <code>Future</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">use</span> futures::stream::futures_unordered::FuturesUnordered;
+<span style="color:#66d9ef">use</span> hyper::{client::ResponseFuture, Client};
+
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">setup_requests</span>() -&gt; <span style="color:#a6e22e">FuturesUnordered</span><span style="color:#f92672">&lt;</span>ResponseFuture<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> list_of_futures <span style="color:#f92672">=</span> FuturesUnordered::new();
+
+    <span style="color:#66d9ef">let</span> client <span style="color:#f92672">=</span> Client::new();
+
+    <span style="color:#66d9ef">let</span> first <span style="color:#f92672">=</span> client.get(URL);
+    list_of_futures.push(first);
+
+    <span style="color:#66d9ef">let</span> second <span style="color:#f92672">=</span> client.get(URL);
+    list_of_futures.push(second);
+
+    list_of_futures
+}
+</code></pre></div>
+<p>In this example we used <a href="https://github.com/hyperium/hyper"><code>hyper</code></a> for our HTTP calls. You can find the rest of the code <a href="https://github.com/chicagohaskell/async-futures-talk/blob/master/rustlb/examples/multi-http/src/main.rs">over here on Github</a>.</p>
+<p>The syntax will look slightly different if you are using <code>reqwest</code>. Here you <code>.join()</code> multiple requests and return it as &ldquo;one Future&rdquo;.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">fetch</span>() -&gt; <span style="color:#a6e22e">impl</span> Future<span style="color:#f92672">&lt;</span>Item<span style="color:#f92672">=</span>(), Error<span style="color:#f92672">=</span>()<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> client <span style="color:#f92672">=</span> Client::new();
+
+    <span style="color:#66d9ef">let</span> json <span style="color:#f92672">=</span> <span style="color:#f92672">|</span><span style="color:#66d9ef">mut</span> res : <span style="color:#a6e22e">Response</span> <span style="color:#f92672">|</span> {
+        res.json::<span style="color:#f92672">&lt;</span>STRUCT_TYPE<span style="color:#f92672">&gt;</span>()
+    };
+
+    <span style="color:#66d9ef">let</span> request1 <span style="color:#f92672">=</span>
+        client
+            .get(URL)
+            .send()
+            .and_then(json);
+
+    <span style="color:#66d9ef">let</span> request2 <span style="color:#f92672">=</span>
+        client
+            .get(URL)
+            .send()
+            .and_then(json);
+
+    request1.join(request2)
+        .map(<span style="color:#f92672">|</span>(res1, res2)<span style="color:#f92672">|</span>{
+            println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{:?}&#34;</span>, res1);
+            println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{:?}&#34;</span>, res2);
+        })
+        .map_err(<span style="color:#f92672">|</span>err<span style="color:#f92672">|</span> {
+            println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;stdout error: {}&#34;</span>, err);
+        })
+}
+</code></pre></div>
+<p>The full code can also be found on <a href="https://github.com/seanmonstar/reqwest/blob/master/examples/async_multiple_requests.rs">GitHub</a>.</p>
+<h2 id="what-is-the-future-of-futures---">What is the future of Futures? 🎩 + ⛑</h2>
+<p>Futures are getting into stable Rust at 1.37, so around June. There are also changes around the syntax and runtime, which will benefit the amount of code you have to write to get this stream of values out of a <code>Future</code> and into a synchronous Rust format.</p>
+<p>You can also use the <a href="https://github.com/rustasync/runtime"><code>Runtime</code></a> crate, which saves you almost all of the boilerplate code. Although going through the process above helps you understand Futures on a deeper level.</p>
+<h2 id="summary">Summary</h2>
+<p>If you perform asynchronous operations, like fetching files from the operating system or making HTTP requests to a remote server, then Futures let you work with the return values in a non-blocking way.</p>
+<p>If it would be synchronous, you would have to block a thread the operation is running on, and wait for the result until you continue. To do this in an asynchronous way, we have a runtime which creates threads themselves, and takes on Futures. It will fill the value inside the <code>Future</code> when the operating system returns a value to the runtime.</p>
+<p>Once the <code>Future</code> is fulfilled, the runtime sets <code>Async::Ready</code> and the <code>.and_then()</code> part of the code will get executed.</p>
+
+</div>
+
+
+    </div>
+
+    
+  </body>
+</html>

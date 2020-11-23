@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.78.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Web Development with Rust— 02/x: Deploy your first App &middot; Bastian Gruber</title>
+
+  
+  <link rel="stylesheet" href="https://gruberbastian.com/css/print.css" media="print">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/poole.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/syntax.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/hyde.css">
+  <link href="https://fonts.googleapis.com/css?family=Asap|Roboto+Mono&display=swap" rel="stylesheet">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Bastian Gruber" />
+</head>
+
+  <body class="theme-base-08 ">
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://gruberbastian.com/"><h1>Bastian Gruber</h1></a>
+      <p class="lead">
+       Software &#43; Philosophy 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="https://gruberbastian.com/">Home</a> </li>
+      <li><a href="/posts/about/"> About </a></li><li><a href="/posts/interviews/"> Interviews </a></li><li><a href="/posts/talks/"> Talks </a></li>
+    </ul>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</div>
+
+    <div class="content container">
+    <div class="post">
+  <h1>Web Development with Rust— 02/x: Deploy your first App</h1>
+  <span class="post-date">Tue, Apr 2, 2019</span>
+  <blockquote>
+<p>You can find the <a href="https://gruberbastian.com/intro_rust">Introduction to web programming in Rust</a> over here</p>
+</blockquote>
+<hr>
+<p><em>Update 08.07.2019: tide 0.2.0</em></p>
+<h2 id="this-series-has-3-goals">This series has 3 goals</h2>
+<ol>
+<li>Show the obstacles new developers will face when programming in Rust but also its advantages when it comes to the specific topic (this time: Deployments).</li>
+<li>Show different options for web development in Rust.</li>
+<li>Always have an updated application in production afterwards.</li>
+</ol>
+<p>Number three is super important for me. That’s the reason why we start part 02/x with a few ideas on what you can build, and why this tutorial will look like as it does. Whenever you learn something new, take this mental model:</p>
+<blockquote>
+<p>Never do things for their own sake</p>
+</blockquote>
+<p>Which translate to: Never learn Rust just because you want to learn Rust. This is the biggest factor why you will fail to learn a new language or basically anything in life. You have to have a goal in mind, a reason to do something.</p>
+<h2 id="so-how-should-i-learn-rust-then">“So how should I learn Rust then?”</h2>
+<ol>
+<li>Have an app or idea in mind you want to see in production. This can be a service to calculate prime numbers, a web app to track your programming goals, a service which fetches your latest likes on GitHub and tracks their activities etc. You decide what you want to build.</li>
+<li>Hold yourself accountable to it. Tell your friends, work colleagues or your partner that you promise them that in 6 months time, they will be able to use this service. Every few days or weeks, you will keep them updated about your current status.</li>
+</ol>
+<p>It doesn’t need to be a polished idea or a service to compete with other apps. It has to be something you would like to have. It will help you staying through the hardships in the beginning, and through the phase when the honey moon is over and you see that Rust can be hard at times.</p>
+<h4 id="i-will-make-mine-public-as-well">I will make mine public as well:</h4>
+<p><em>At the end of the next 6 months, I have a running web service with frontend for my MeetUp “Rust and Tell Berlin” up an running so speakers can submit proposals and slides and videos can be watched from talks which were held the previous events.</em></p>
+<p>I will hold myself accountable through this tutorial series.</p>
+<hr>
+<p>Lets move on. In this part of the series, we want to deploy our first application. If you come from NodeJS, the deployment life cycle looks like this:</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/nodejs_dev.png" alt="nodejs_dev_cycle"></p>
+<p>With NodeJS, you can push any code to a production server. You have to have good tests, ESLint and other tools to catch undefined and Type errors.</p>
+<p>In an ideal world, we have a development cycle which looks like this:</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/rust_dev.png" alt="ideal_dev_cycle"></p>
+<p>So we want to break things as early and close to the code (your local machine) as possible. Once we figured out a working code base, we would like to bring exactly this working solution onto a server. Because of Rusts Type System and strong compiler, we would be able to pack a working binary and move it to production. Tests would cover the rest of the errors.</p>
+<h3 id="rust-moves-possible-errors-closer-to-the-coding-environment">Rust moves possible errors closer to the coding environment</h3>
+<p>a) The Rust Compiler will catch a lot of problems, almost all of them.</p>
+<p>b) You can catch the rest with good tests (in our case: Error handling when receiving the wrong parameters).</p>
+<p>c) After you can compile your Rust Code, you have a binary which can be shipped in many different ways.</p>
+<h3 id="difference-between-local-and-production-ready-code">Difference between local and production-ready code</h3>
+<p>When we talk about deploying, we have to make sure that our code is able to:</p>
+<ul>
+<li>randomly assign a PORT based on the environment it is running</li>
+<li>handle errors gracefully</li>
+<li>respond to not expected input with proper return codes and messages</li>
+<li>fail early in the deployment pipeline with a proper test setup</li>
+<li>log events so errors can be traced</li>
+</ul>
+<p>In this article we will cover the first must-have (randomly assigning a PORT). Each article in the series will cover the rest of the requirements.</p>
+<h3 id="four-different-deployment-options">Four different deployment options</h3>
+<p>We generally have different deployment and hosting options. Some are more suited for large scale application and some are better for private projects and to get a project off the ground without too much complexity. Our options are:</p>
+<ul>
+<li>Managed Deployments / Hosting (Heroku)</li>
+<li>Self managed via Docker and a Docker registry</li>
+<li>Self managed via Docker and a Git registry</li>
+<li>Managed Serverless Lambda functions (AWS Lambda, ZEIT now)</li>
+</ul>
+<p>We will cover each of these options in this article and see advantages, disadvantages and how to prepare your Rust Code so it can be deployed (in the best possible way).</p>
+<h2 id="building-the-first-version-of-your-app">Building the first version of your app</h2>
+<p>As we said in the beginning, we need an idea and what we want to build. Even if we map out a bigger picture of the application in the next article (03/x), we can get started and choose a framework we want to build it with:</p>
+<ul>
+<li><a href="https://rocket.rs/">rocket</a></li>
+<li><a href="https://actix.rs/">actix</a></li>
+<li><a href="https://gotham.rs/">gotham</a></li>
+<li><a href="https://github.com/rustasync/tide">tide</a> (work in progress)</li>
+</ul>
+<p>As seen in the <a href="https://dev.to/gruberb/intro-to-web-programming-in-rust-for-nodejs-developers-lp">first article</a>, you can go lower level if you want:</p>
+<ul>
+<li><a href="https://hyper.rs/">hyper</a></li>
+<li><a href="https://docs.rs/reqwest/0.9.11/reqwest/">reqwest</a></li>
+<li><a href="https://github.com/carllerche/h2">h2</a></li>
+</ul>
+<p>We will pick one framework for the written version of this article. I will pick <a href="https://github.com/rustasync/tide">tide</a>, since I am planning to contribute to it more in the future. I will map out solutions for rocket and actix in the <a href="https://github.com/gruberb/web-programming-in-rust">GitHub repository</a> for this series.</p>
+<h3 id="set-up-our-app">Set up our app</h3>
+<p>We want to make sure to use asynchronous code, which is not in Rust stable yet. Therefore we need to install and set the <a href="https://doc.rust-lang.org/book/appendix-07-nightly-rust.html">nightly version</a> of Rust:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ rustup install nightly-2019-02-25
+$ rustup default nightly</code></pre></div>
+<p>This will generate our first folder structure. The bare bones of a running web app with tide look like this:</p>
+<p><strong>Cargo.toml</strong>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">package</span>]
+<span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;my-cool-web-app&#34;</span>
+<span style="color:#a6e22e">version</span> = <span style="color:#e6db74">&#34;0.1.0&#34;</span>
+<span style="color:#a6e22e">authors</span> = [<span style="color:#e6db74">&#34;YOUR NAME + EMAIL&#34;</span>]
+<span style="color:#a6e22e">edition</span> = <span style="color:#e6db74">&#34;2018&#34;</span>
+
+[<span style="color:#a6e22e">dependencies</span>]
+<span style="color:#a6e22e">tide</span> = <span style="color:#e6db74">&#34;0.2.0&#34;</span></code></pre></div></p>
+<p><strong>main.rs</strong>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#![feature(async_await)]</span>
+
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> app <span style="color:#f92672">=</span> tide::App::new(());
+    app.at(<span style="color:#e6db74">&#34;/&#34;</span>).get(async <span style="color:#66d9ef">move</span> <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> <span style="color:#e6db74">&#34;Hello, world!&#34;</span>);
+
+    app.serve();
+}
+</code></pre></div></p>
+<p>As we said earlier, we need to give the hosting environment the chance to assign a PORT to our application.</p>
+<p>Our <strong>main.rs</strong> has to accompany these requirements:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#![feature(async_await)]</span>
+
+<span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">crate</span> tide;
+
+<span style="color:#66d9ef">use</span> tide::App;
+<span style="color:#66d9ef">use</span> std::{env, net::SocketAddr};
+
+
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> app <span style="color:#f92672">=</span> App::new(());
+    <span style="color:#66d9ef">let</span> address <span style="color:#f92672">=</span> SocketAddr::from(([<span style="color:#ae81ff">127</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>], get_server_port()));
+
+    app.at(<span style="color:#e6db74">&#34;/&#34;</span>).get(async <span style="color:#66d9ef">move</span> <span style="color:#f92672">|</span>_<span style="color:#f92672">|</span> <span style="color:#e6db74">&#34;hello world&#34;</span>);
+    app.serve(address).expect(<span style="color:#e6db74">&#34;Start server&#34;</span>);
+}
+
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">get_server_port</span>() -&gt; <span style="color:#66d9ef">u16</span> {
+    env::var(<span style="color:#e6db74">&#34;PORT&#34;</span>)
+        .ok()
+        .and_then(<span style="color:#f92672">|</span>port<span style="color:#f92672">|</span> port.parse().ok())
+        .unwrap_or_else(<span style="color:#f92672">||</span> <span style="color:#ae81ff">8186</span>)
+}
+</code></pre></div></p>
+<p>With this setup ready, we can go over each deployment option.</p>
+<h2 id="managed-deployments-via-heroku">Managed Deployments via Heroku</h2>
+<blockquote>
+<p>Managed environments are for the most part just an abstraction. They internally do the same as you would with your own pipeline: Push code to a git repository. A “hook” is watching this repository and on changes will start to compile the latest version and run it. For you however, it’s just a <code>git push heroku master</code>.</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/heroku.png" alt="heroku_deployments"></p>
+<p>To get started, you need a <a href="https://signup.heroku.com/">Heroku account</a> (free). Login with your new account and create a new app:</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/Bildschirmfoto%202019-03-17%20um%2011.35.50.png" alt="heroku_new_app"></p>
+<p>After clicking “Create app”, Heroku explains under the “Deploy” tab how to push your code to their servers:</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/Bildschirmfoto%202019-03-17%20um%2011.36.13.png" alt="heroku_deploy"></p>
+<h4 id="prepare-your-code">Prepare your code</h4>
+<p>First, we need to be able to push our code base to the remote location (Heroku). Therefore please install the <a href="https://devcenter.heroku.com/articles/heroku-cli">Heroku tool chain</a>. Afterwards we can add the remote location to our GIT repository:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd my-cool-web-app
+$ heroku login
+$ heroku git:remote -a my-cool-web-app</code></pre></div>
+<p>Next, we need to tell Heroku how to run our application after it is build. Heroku expects a file with the name <strong>Procfile</strong>, which has the start command in it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ touch Procfile</code></pre></div>
+<p>And put the following line it it:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">web ./target/release/my-cool-web-app</code></pre></div>
+<p>We also have to tell Heroku which version of Rust we are using. Since we want to use nightly, we create a file called <strong>RustConfig</strong> in the root directory:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ touch RustConfig</code></pre></div>
+<p>with the following line:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">VERSION<span style="color:#f92672">=</span>nightly</code></pre></div>
+<h4 id="caveat">Caveat</h4>
+<p>Rust is so new that Heroku doesn’t support it out of the box. We need to install and activate a “buildpack” for Rust. So inside the root directory of your application, execute the following commands:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ heroku create --buildpack emk/rust
+$ heroku buildbpacks:set emk/rust</code></pre></div></p>
+<p>This will activate the language support for Rust.</p>
+<p>Now we can:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ git add .
+$ git commit -m <span style="color:#e6db74">&#34;Init&#34;</span>
+$ git push heroku master</code></pre></div></p>
+<p>When succeeded, we go back to the Heroku dashboard in the browser and click on the the generated domain (under “Settings”). A browser windiw should open and display “Hello, World!”.</p>
+<h3 id="summary">Summary</h3>
+<ul>
+<li>Heroku makes it easy to deploy your application</li>
+<li>In less then 5 minutes you have a running version of your app live</li>
+<li>You can assign your own domain and activate HTTPS (if you pay for it)</li>
+<li>Heroku ist the best option when it comes to this tutorial and starting side projects: Cheap, easy to use and removes the overhead of deplyoments especially in the beginning</li>
+</ul>
+<h2 id="docker">Docker</h2>
+<blockquote>
+<p>Using Docker has the huge advantage of being free in choosing your pipelines and environments. You can either build the image locally and push it as-is to a Docker registry. From there a server can take(download) and execute (<code>docker run</code>) it. Or you create a blueprint (Dockerfile) which other service can use to build on their servers.</p>
+</blockquote>
+<p>If you are using Docker for your deployments, you have two options. The first one is to push your code (with a Dockerfile) to a Git registry (like GitHub or Bitbucket) and then have a configured deployment server which listens to changes, SSHs into the Git registry, takes the code, deploys and runs it.</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/git_docker.png" alt="docker_git_registry"></p>
+<p>Your second option is to use a Docker registry. There you have the advantage to pre build your container and ship it as-it-is. This makes it sometimes faster to run deployments and you have to ship less code (especially in case of Rust).</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/docker_registry.png" alt="docker_registry"></p>
+<p>We can use Rusts feature of being able to be compiled to a binary. We can even go one step further and compile a static Rust binary with no external dependencies. What we would need for this, is:</p>
+<ul>
+<li>Build a Rust binary</li>
+<li>Statically linked the needed C libraries to it so it can run on it’s own</li>
+</ul>
+<p>The result would be to have a binary which doesn’t even need Rust to run. Thanks to the Open Source community and Erik Kidd, there is already a solution out there which helps us with that.</p>
+<p>The result is a super small Docker image with no external dependencies. Meet <a href="https://github.com/emk/rust-musl-builder">rust-musl-builder</a>. It is a Docker image which helps you build static Rust binaries. It will download the whole image just after the first execution.</p>
+<p>Everything we type and create happens from the root directory of our application.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cd my-cool-web-app</code></pre></div></p>
+<p>Before we create our Dockerfile, lets see what we actually trying to do. We are using the rust-musl-builder to statically link the musl-libc library into our binary.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker run --rm -it -v <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>pwd<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>:/home/rust/src ekidd/rust-musl-builder cargo build --release</code></pre></div></p>
+<p>This will create our super small binary. You can inspect it like that:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ ls -lh target/x86_64-unknown-linux-musl/release/my-cool-web-app</code></pre></div></p>
+<p>It is just a few MB small (in my example: 4,4MB). To be able to recreate this procedure over and over again, and not just on our local machine but also in a deployment pipeline on different servers, we create a multi-stage Dockerfile.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-docker" data-lang="docker"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> ekidd/rust-musl-builder:nightly AS build</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> . ./<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> sudo chown -R rust:rust .<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> cargo build --release<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> scratch</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /home/rust/src/target/x86_64-unknown-linux-musl/release/my-cool-web-app /<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">ENV</span> PORT <span style="color:#ae81ff">8181</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">EXPOSE</span><span style="color:#e6db74"> ${PORT}</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;/my-cool-web-app&#34;</span>]</code></pre></div>
+<p>You can build the image now via:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker build -t my-cool-web-app:latest .</code></pre></div></p>
+<p>And run it with:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker run -d --rm -P --name heroku heroku:latest</code></pre></div></p>
+<p>Now you can open your browser (in macOS) via:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ open http://<span style="color:#66d9ef">$(</span>docker container port my-cool-web-app 8181<span style="color:#66d9ef">)</span></code></pre></div></p>
+<p>We just created a super minimal Docker image which contains our binary with no external dependencies. You can inspect your just created image via:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker image ls my-cool-web-app</code></pre></div></p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/carbon.png" alt="small_docker_image"></p>
+<h3 id="summary-1">Summary</h3>
+<ul>
+<li>Docker is a beast, but when used wisely can be quite helpful</li>
+<li>Especially with Rust: You can create statically linked binaries which are super small and don’t even need a Rust environment to run in</li>
+<li>You also have much more options to host and run your application when choosing Docker</li>
+<li>However, managed hosting environments like Heroku don’t allow pushing Docker images to their environment</li>
+</ul>
+<h2 id="serverless-runtimeszeitnow">Serverless runtimes — ZEIT/now</h2>
+<blockquote>
+<p>Serverless is a different mindset then the first two options. Serverless also means stateless, so you are not building web applications but functions. Instead of having API endpoints build into your app, you basically just have those API endpoints (in serverless terms: handlers). Our web frameworks like rocket and actix might be an overkill here. <a href="https://github.com/zeit/now-builders/issues/297#issuecomment-473682599">Right now, ZEIT is not supporting Rust nightly builds in their new serverless environment</a>.</p>
+</blockquote>
+<p>So instead of creating a binary (with <code>cargo new web-app</code>), we create a library:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cargo new now-service --lib
+$ cd now-service</code></pre></div>
+<p>Here we have to create a file called <code>now.json</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">{
+  <span style="color:#e6db74">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;now-service&#34;</span>,
+  <span style="color:#e6db74">&#34;version&#34;</span>: <span style="color:#ae81ff">2</span>,
+  <span style="color:#e6db74">&#34;builds&#34;</span>: [
+    {
+      <span style="color:#e6db74">&#34;src&#34;</span>: <span style="color:#e6db74">&#34;src/index.rs&#34;</span>,
+      <span style="color:#e6db74">&#34;use&#34;</span>: <span style="color:#e6db74">&#34;@now/rust&#34;</span>
+    }
+  ]
+}
+</code></pre></div>
+<p>And our <code>src/lib.rs</code> example looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">use</span> http::{Request, Response, StatusCode, header};
+
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">handler</span>(request: <span style="color:#a6e22e">Request</span><span style="color:#f92672">&lt;</span>()<span style="color:#f92672">&gt;</span>) -&gt; <span style="color:#a6e22e">http</span>::Result<span style="color:#f92672">&lt;</span>Response<span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;&gt;</span> {
+    <span style="color:#66d9ef">let</span> response <span style="color:#f92672">=</span> Response::builder()
+        .status(StatusCode::OK)
+        .header(header::CONTENT_TYPE, <span style="color:#e6db74">&#34;text/html&#34;</span>)
+        .body(<span style="color:#e6db74">&#34;&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;title&gt;A simple deployment with Now!&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Welcome to Rust on Now&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&#34;</span>.to_string())
+        .expect(<span style="color:#e6db74">&#34;failed to render response&#34;</span>);
+
+    Ok(response)
+}
+</code></pre></div>
+<p>As with Heroku, you need to install the <a href="https://zeit.co/docs/v2/getting-started/installation/">ZEIT toolchain</a>, which is called “now”. There are several options. If you are on macOS, you can do it via:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ brew cask install now</code></pre></div></p>
+<p>Which installs the Now application. Find it in your /Applications folder and open it. You can finish the installation by typing in your email address. This will also install the command line tool chain.</p>
+<p>That’s basically it. You can type:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ now</code></pre></div></p>
+<p>and hit Enter. This will start the upload of your application. Login to your <a href="https://zeit.co/dashboard">ZEIT dashboard</a> and click on the provided link.</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/zeit_dashboard.png" alt="ZEIT_dashboard"></p>
+<h3 id="summary-2">Summary</h3>
+<ul>
+<li>Serverless lets you save costs: The service is just running when requested</li>
+<li>This ends up in higher boot times which need to be considered</li>
+<li>The mindset of serverless lets you rethink state and if you really need a fully fledged web application for some use cases</li>
+<li>The deployment can take a bit longer when using AWS Lambda or ZEITs now</li>
+</ul>
+<blockquote>
+<p>Also checkout the <a href="https://github.com/gruberb/web-programming-in-rust">GitHub repository</a> to his series.</p>
+</blockquote>
+
+</div>
+
+
+    </div>
+
+    
+  </body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.78.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>The easiest part of programming: Naming things &middot; Bastian Gruber</title>
+
+  
+  <link rel="stylesheet" href="https://gruberbastian.com/css/print.css" media="print">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/poole.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/syntax.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/hyde.css">
+  <link href="https://fonts.googleapis.com/css?family=Asap|Roboto+Mono&display=swap" rel="stylesheet">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Bastian Gruber" />
+</head>
+
+  <body class="theme-base-08 ">
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://gruberbastian.com/"><h1>Bastian Gruber</h1></a>
+      <p class="lead">
+       Software &#43; Philosophy 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="https://gruberbastian.com/">Home</a> </li>
+      <li><a href="/posts/about/"> About </a></li><li><a href="/posts/interviews/"> Interviews </a></li><li><a href="/posts/talks/"> Talks </a></li>
+    </ul>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</div>
+
+    <div class="content container">
+    <div class="post">
+  <h1>The easiest part of programming: Naming things</h1>
+  <span class="post-date">Sat, Dec 1, 2018</span>
+  <p>Each system has its own believes and &ldquo;common truths&rdquo;. With system, I mean areas or professions. Education, Science, cooking etc. Each place where people come together and build a closed system where they operate in. From within, it&rsquo;s almost impossible to change a system, it&rsquo;s just possible from the outside and by letting the old system die and create parallel to that a new one.</p>
+<p>Programming is a system for me. With its own paradigms, models and behaviours. One common believe is that &ldquo;naming things&rdquo; is hard. And so far I followed along, had big arguments about how and what to name variables, methods, classes and whatnot.</p>
+<p>Though, at my current projected I encountered something strange: I reviewed a Pull Request from a team mate and suggested a name change. The person commented a few minutes later and said: &ldquo;I don&rsquo;t particularly care about the name, so I&rsquo;ll change it and update the PR.&rdquo;</p>
+<p>I was a bit baffled. Since in my head it was not about the name but what the variable represented. I did a bit of thinking since then and figured out common misconceptions about naming things. <!-- raw HTML omitted -->Some people go even so far to take advice from famous writers about how to name things<!-- raw HTML omitted -->.</p>
+<p>Which, in the end, is not the point.</p>
+<p>You sometimes don&rsquo;t even have to read a whole book about programming, sometimes the golden nuggets are already in the preface. Like in <!-- raw HTML omitted -->&ldquo;Structure and Interpretation of Computer Programs&rdquo;<!-- raw HTML omitted -->. There it states:</p>
+<p><em>&ldquo;We control complexity by building abstractions that hide details when appropriate. We control complexity by establishing conventional interfaces that enable us to construct systems by combining standard, well-understood pieces in a ``mix and match'' way. We control complexity by establishing new languages for describing a design, each of which emphasizes particular aspects of the design and deemphasizes others.&quot;</em></p>
+<h3 id="if-there-are-talksblog-posts-about-solving-a-particual-problem-then-thats-rarely-the-problem-to-solve">If there are talks/blog posts about solving a particual problem, then thats rarely the problem to solve</h3>
+<p>If there is a common problem to solve within a complex system (like the programming community), and its not yet solved, then</p>
+<p>a) That&rsquo;s not the problem to solve but has some underlying issue<br>
+b) Our closed mindset doesn&rsquo;t allow us to think outside of the box to solve the underlaying issue</p>
+<p>Why do I believe this? I find parallels within the investment community. There are rarely undervalued companies out there. Because of the masses of investors and financial advisors, &ldquo;the market&rdquo; already priced everything in. Or in other words: The current marekt already represents the best, currently known value.</p>
+<p>Within the programming community, we often think that there are so many difficult problems to solve. But in my day to day work as a software developer, the problems which are not solved yet are hard to solve. Which in the end means: No single book or paradigm can solve them. Rather, you have to build other skills around your knowledge to tackle it from a different angle.</p>
+<p>Have you ever tried to google a problem you have and found literally zero results? When this happens it often means that you ran against a wall and have to rethink what you are doing. Because its rarely the case that somebody else didn&rsquo;t solve it yet.</p>
+<p>And I talk here about standard, software project problems and not AI or ML problems which are still a new era. This brings me to &ldquo;naming things&rdquo;. Since the problem is apparently not solved yet, and there are still blog posts, books and talks about it, and we believe in Mr.Market (here: Mr. Developer Community), which should be so smart to solve problems, then &ldquo;naming things&rdquo; is not the problem and rather a sympton of a deeper, underlying issue.</p>
+<h3 id="examples">Examples</h3>
+<p>The problem I encountered in 10 years of programming now is <strong>not</strong> calling a variable <code>Scheduler</code> or <code>TaskManager</code>. Maybe the reason is that I am not a native english speaking person, but my guess is that in a clear defined and well architectured code base, I would understand both abstractions and would carry on to the problem I actually have to solve.</p>
+<p>I encountered however two large &ldquo;naming&rdquo; problems lately which I think explain the real problem really well.</p>
+<p>1.Calling a NodeJS/koa middleware <code>validateUser()</code> with the following signature:</p>
+<pre><code>const validateuser = () =&gt; async (ctx, next) =&gt; {
+  const user = await userModel.get(ctx.params.userId);
+
+  if (!user) {
+    ctx.throw(404, `User does not exist: ${ctx.params.userId}`);
+  }
+
+  // Set the user to the ctx to be available for later
+  ctx.request.user = user;
+
+  await next();
+};
+</code></pre><p>A typical argument here is: The name <code>validateUser</code> doesn&rsquo;t represent the full behind-the-scenes work done from the function. We have a database call to get the <code>user</code> with the <code>id</code>, if it&rsquo;s not found we return a <code>404</code> and if the <code>user</code> is found we add it to the <code>request</code> to have access to it later in the app.</p>
+<p>Because once you created this function, and call it every time on your routes:</p>
+<pre><code>app
+  .get(
+    '/v1/users/:userId',
+    validateUser(),
+    async ctx =&gt; {...
+
+app
+  .put(
+    '/v1/users/:userId',
+    validateUser(),
+    async ctx =&gt; {...
+</code></pre><p>then a future developer in a year from now will look at the code and trying to figure out how to set the user to the request object so he or she can use it later on in the program. The name <code>validateUser</code> doesn&rsquo;t indicate at all that the <code>user</code> is added to the request object here.</p>
+<p>You have two options now:</p>
+<ul>
+<li>Thinking about a better name which includes the behaviour of adding the user to the request object</li>
+<li>Split the function into two or three pieces, and calling it like this:</li>
+</ul>
+<pre><code>app
+  .get(
+    '/v1/users/:userId',
+    validateUser(),
+    addUserToRequest(),
+    async ctx =&gt; {...`
+</code></pre><p>From there, you can even question the name <code>validateUser</code> again and call it <code>checkIfUserExists</code>:</p>
+<pre><code>app
+  .get(
+    '/v1/users/:userId',
+    checkIfUserExists(),
+    addUserToRequest(),
+    async ctx =&gt; {...`
+</code></pre><p>Which is more precise and represents actually what it does.</p>
+<p>You could call this &ldquo;naming problems&rdquo;, but I think naming things is actually a writers or poets dilemma, because of audiences and target groups mixed with own feelings and representations of the world.</p>
+<p>As a software engineer, you are not a poet. You can sometimes get away with a bit more ugly names (like <code>checkIfUserExists</code>), because I much rather read this during my hunt for a bug then <code>validateUser</code>, since it is:</p>
+<ul>
+<li>Not the solely purpose of the function</li>
+<li>Validating is not really happening here since we don&rsquo;t do checks if the user typed in its first and last name and such</li>
+</ul>
+<p>2.My second &ldquo;naming&rdquo; problem was the following:</p>
+<pre><code>class User {
+    constructor(yamlPath) {
+        this.yamlPath = yamlPath;
+    }
+
+    init(roles) {
+        const defPath = path.join(__dirname, '..', this.yamlPath);
+        const yamlFile = fs.readFileSync(defPath, 'utf-8');
+        const yamlContent = yaml.safeLoad(yamlFile);
+        this.permissions = yamlContent;
+        this.roles = roles;
+    }
+}
+
+const initRolesAndPermissions = async (yamlPath) =&gt; {
+    user = new User({ path: yamlPath});
+    user.init();
+}
+
+module.exports = {
+  initRolesAndPermissions,
+};
+
+</code></pre><p>You can argue about the &ldquo;bad&rdquo; code of course, but the first discussion I was bringing up was: The method <code>user.init()</code> doesn&rsquo;t init the user but is just setting roles. You can call this &ldquo;discussing about names&rdquo; but in my view, it&rsquo;s not about naming, it&rsquo;s about abstracting meaning so I don&rsquo;t have to look behind the abstraction any more. And of course, the method <code>init</code> is just a typical <code>setter</code> of a class so lets rename it to <code>setRoles</code> and done.</p>
+<h3 id="the-purpose-of-naming-things-in-programming">The purpose of naming things in Programming</h3>
+<p>So if we name variables or methods and another developer comes along and has no clue what&rsquo;s behind this badly named thing, then we named somethings which was:</p>
+<ul>
+<li>not clear to us</li>
+<li>not obvious and easy to understand</li>
+<li>has to operate within an already complex, not well understood system (aka code base)</li>
+</ul>
+<p>Naming things is not to find real world use cases and name the created variable or business logic accordingly.</p>
+<p>It is about abstracting meaning and knowledge. Also from the <!-- raw HTML omitted -->preface<!-- raw HTML omitted -->:</p>
+<p><em>&ldquo;They should know what not to read, and what they need not understand at any moment. They should feel secure about modifying a program, retaining the spirit and style of the original author.&quot;</em></p>
+<p>So if I have a filter to find a specific user:</p>
+<pre><code>const findUser = (id) =&gt; {
+    const listOfUsers = db.getUsers();
+    return listOfUsers.filter(a =&gt; a.id === id);
+}
+</code></pre><p>Some people might say &ldquo;Don&rsquo;t call it <code>a</code> in the filter but <code>filteredUser</code> or something like that&rdquo;. But my take is: I will probably never ever touch this method again. It&rsquo;s small, it&rsquo;s precise, and sort of nice looking. A developer who comes into the project in a year from now immediately knows what&rsquo;s going on and she can use this method without second guessing.</p>
+<p>You can argue to abstract the <code>db</code> access and make it obvious that it&rsquo;s a bit expensive to run this, but it has nothing to do with the name of the method nor the name of the variable inside the filter.</p>
+<h3 id="summary">Summary</h3>
+<p>So the problem is not to give something a name. You don&rsquo;t &ldquo;create classes&rdquo; or &ldquo;write functions&rdquo;. No, you compose systems. Within those systems you want to reduce the headspace for each participant to read every single line of code to understand what&rsquo;s going on. Therefore you bundle meaningful parts of the code, hide it inside a file, method or variable and then name it accordingly so the other developer knows what this part does without even looking at it.</p>
+<p>To go back to my previous statement: It&rsquo;s not about naming but &ldquo;something else&rdquo;, an underlaying issue. The underlaying issue is most of the time the understanding of the system by the developer. If you get hired to do a project or join a company and have to contribute code on your first day: It&rsquo;s never about your ability to name things. It&rsquo;s much harder then that. It&rsquo;s understanding what the code you wrote does, what it should express.</p>
+<p>Always remember: You don&rsquo;t name things, <strong>you abstract meaning</strong>. Which is much harder to do. But once you are realsing this fact, you will write more precise code, ask more questions along the way and treat the code base what it is: A construction manual for the developer who joins the project in 5 years and has no idea why certain things happen. <strong>And then, to find a name for this abstraction is a rather easy task.</strong></p>
+<p>Bad names will come harder to your mind, because if you look at your produced code you will know what you abstracted and why.</p>
+
+</div>
+
+
+    </div>
+
+    
+  </body>
+</html>

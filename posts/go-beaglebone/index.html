@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.78.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Get started with BeagleBone &middot; Bastian Gruber</title>
+
+  
+  <link rel="stylesheet" href="https://gruberbastian.com/css/print.css" media="print">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/poole.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/syntax.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/hyde.css">
+  <link href="https://fonts.googleapis.com/css?family=Asap|Roboto+Mono&display=swap" rel="stylesheet">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Bastian Gruber" />
+</head>
+
+  <body class="theme-base-08 ">
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://gruberbastian.com/"><h1>Bastian Gruber</h1></a>
+      <p class="lead">
+       Software &#43; Philosophy 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="https://gruberbastian.com/">Home</a> </li>
+      <li><a href="/posts/about/"> About </a></li><li><a href="/posts/interviews/"> Interviews </a></li><li><a href="/posts/talks/"> Talks </a></li>
+    </ul>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</div>
+
+    <div class="content container">
+    <div class="post">
+  <h1>Get started with BeagleBone</h1>
+  <span class="post-date">Sun, Mar 26, 2017</span>
+  <p><img src="https://preview.ibb.co/iN3fmF/header.jpg" alt="BeagleBone"></p>
+<p>I have to admit, the power of IoT did not yet reach my little nerd life here in Berlin. Therefore, I took an effort this year and went to an IoT Hackathon. It was a fun weekend, I think there were just 5 developers and the rest of the crowd came from a social and educational background. Which made it even more fun and interesting.</p>
+<p>Anyway, since this weekend I ordered a RaspberryPi and tried to do something useful with it. This idea, and my other habit of simplyfing my life clashed a little bit. So the RaspberryPi sat around for way too long with no real purpose. After browsing the internet though, I found an interesting <!-- raw HTML omitted -->post from Sayan who set up a BeagleBone board with Go<!-- raw HTML omitted -->. After React, Go is one of the new technologies I really like. After reading the article, I ordered the BeagleBone Black Wireless and waited impatiently for it to arrive.</p>
+<p>Finally there, I did around 4 hours of trial and error to finally figure out how this little board works and what I have to do. Mainly, I wanted:</p>
+<ul>
+<li>Install Debian on it</li>
+<li>Booting it without the need of a SD Card</li>
+<li>Run a Go server or something useful on it</li>
+</ul>
+<p>At the Hackathon back then, I created a temperature and noise dashboard (<!-- raw HTML omitted -->code is on GitHub<!-- raw HTML omitted -->). Maybe the BeagleBone could do the same for me at home?</p>
+<p>During this simple steps, I bricked the device twice, found some old post in some forum how to rebuild it and now I have working BeagleBone Black Wireless. In addition, I installed my own Go server on it to access it without a USB connection.</p>
+<h2 id="sane-howto-without-the-errors">Sane HowTo (without the errors)</h2>
+<ul>
+<li>
+<p>Connect the BeagleBone with your Mac, wait until it&rsquo;s booted, and then open the newly mounted Volume. In it, you find two drivers for the Mac you need to install before you can continue.</p>
+</li>
+<li>
+<p>Afterwards, there is a &ldquo;Flasher&rdquo; version of Debian for the BBB. It will install the OS on the emmc of your board so you don&rsquo;t need the SD Card every time you boot. I had problems finding a proper &ldquo;Flash-Debian-EMMC-Version&rdquo;. I tried a bunch of different ones, but nothing seemed to work. So I recommend this image here:</p>
+</li>
+</ul>
+<p><code>wget https://rcn-ee.com/rootfs/2017-03-09/flasher/BBB-eMMC-flasher-debian-8.7-console-armhf-2017-03-09-2gb.img.xz</code></p>
+<ul>
+<li>
+<p>Download it, and then unarchive it with Unarchiver for Mac or 7zip.</p>
+</li>
+<li>
+<p>You can now use your Terminal to create a working SD Card with this image, or <!-- raw HTML omitted -->just use this tool<!-- raw HTML omitted -->.</p>
+</li>
+</ul>
+<p><code>sudo dd if=BBB-eMMC-flasher-debian-7.5-2014-05-14-2gb.img of=/dev/disk2s1</code></p>
+<p><img src="https://preview.ibb.co/b5mY6F/status.jpg" alt="WGET image"></p>
+<p>To find out the name of the SD Card, insert it and execute:</p>
+<p><code>df -h</code></p>
+<ul>
+<li>
+<p>Power off your BeagleBone Black, unplugg the power/usb cord, and insert the SD Card.</p>
+</li>
+<li>
+<p>Hold down the S2 button, and while holding it down, plug the power/usb cable in.</p>
+</li>
+</ul>
+<p><img src="https://preview.ibb.co/bt7Ufa/s2.jpg" alt="S2 Button BeagleBone"></p>
+<ul>
+<li>The LEDs need to light up at least once, afterwards you can release the S2 button again.</li>
+</ul>
+<p>CRITICAL: This step didn&rsquo;t work for me in a long time. What I did was to find the right image, and during this process plug the BeagleBone onto a power outlet and NOT via the USB cable in the Mac.</p>
+<ul>
+<li>
+<p>The LEDS are doing now some crazy things, lighting up in order 1-2-3-4-3-2-1-2&hellip;</p>
+</li>
+<li>
+<p>The system is shutting itself down.</p>
+</li>
+<li>
+<p>Plug the BeagleBone back to your Mac, wait until it&rsquo;s booted, and then look at the right IP address in the network settings of your Mac.</p>
+</li>
+<li>
+<p>Open the Terminal and execute this command (with the right IP address)
+<code>ssh debian@192.168.6.2</code></p>
+</li>
+<li>
+<p>The password is <code>tmppwd</code> and can be changed.</p>
+</li>
+</ul>
+<p>Voilà, you have a working BeagleBone Black Wireless!</p>
+
+</div>
+
+
+    </div>
+
+    
+  </body>
+</html>

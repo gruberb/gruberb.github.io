@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.78.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Web Development with Rust - 03/x: Create a REST API &middot; Bastian Gruber</title>
+
+  
+  <link rel="stylesheet" href="https://gruberbastian.com/css/print.css" media="print">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/poole.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/syntax.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/hyde.css">
+  <link href="https://fonts.googleapis.com/css?family=Asap|Roboto+Mono&display=swap" rel="stylesheet">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Bastian Gruber" />
+</head>
+
+  <body class="theme-base-08 ">
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://gruberbastian.com/"><h1>Bastian Gruber</h1></a>
+      <p class="lead">
+       Software &#43; Philosophy 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="https://gruberbastian.com/">Home</a> </li>
+      <li><a href="/posts/about/"> About </a></li><li><a href="/posts/interviews/"> Interviews </a></li><li><a href="/posts/talks/"> Talks </a></li>
+    </ul>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</div>
+
+    <div class="content container">
+    <div class="post">
+  <h1>Web Development with Rust - 03/x: Create a REST API</h1>
+  <span class="post-date">Mon, Apr 15, 2019</span>
+  <h2 id="content">Content</h2>
+<ol>
+<li><a href="#http-requests">HTTP Requests</a></li>
+<li><a href="#postputpatchdelete-are-special">POST/PUT/PATCH/DELETE are special</a></li>
+<li><a href="#the-job-of-a-framework">The Job of a Framework</a></li>
+<li><a href="#creating-an-api-spec">Creating an API spec</a></li>
+<li><a href="#crafting-the-api">Crafting the API</a></li>
+<li><a href="#input-validation">Input Validation</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+<hr>
+<p>APIs are the bread and butter of how a modern and fast-paced web environment. Frontend application, other web services and IoT devices need to be able to talk to your service. API endpoints are like doors to which you decide what comes in and in which format.</p>
+<p>Since Rust is a static typed language with a strong compiler you won&rsquo;t face many of the common pitfalls about running a web service in production. Although there are still run time errors which you have to cover.</p>
+<h2 id="http-requests">HTTP Requests</h2>
+<p>When we talk about creating an API we basically mean a web application which listens on certain paths and responds accordingly. But first things first. For two devices to be able to communicate with each other there has to be an established TCP connection.</p>
+<p>TCP is a protocol which the two parties can use to establish a connection. After establishing this connection, you can receive and send messages to the other party. HTTP is another protocol, which is built on top of TCP, and it&rsquo;s defining the contents of the requests and responses.</p>
+<p>So on the Rust side of things, TCP is implemented in the Rust core library, HTTP is not. Whatever framework you chose in the <a href="https://dev.to/gruberb/web-programming-in-rust-02x-deploy-your-first-app-1k05">previous article</a> they all implement HTTP and therefore are able to receive and send HTTP formatted messages.</p>
+<p>An example GET requests for example looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">GET / HTTP/1.1
+Host: api.awesomerustwebapp.com
+Accept-Language: en</code></pre></div>
+<p>It includes:</p>
+<ul>
+<li><code>GET</code>: the HTTP method</li>
+<li><code>/</code>: The path</li>
+<li><code>HTTP/1.1</code>: The version of the HTTP protocol</li>
+<li><code>HOST</code>: The host/domain of the server we want to request data from</li>
+<li><code>Accept-Language</code>: Which language we prefer and understand</li>
+</ul>
+<p>The most common used HTTP methods are:</p>
+<ul>
+<li>GET</li>
+<li>POST</li>
+<li>PUT</li>
+<li>PATCH</li>
+<li>DELETE</li>
+</ul>
+<h2 id="postputpatchdelete-are-special">POST/PUT/PATCH/DELETE are special</h2>
+<p>We are using <code>GET</code> every time we browse the web. If we want to alter data however (like using <code>POST</code> to send data over to another server), we need to be more cautions and precise.</p>
+<p>First, not everyone is allowed to just send a bunch of data to another server. Our API can for example say: &ldquo;I just accept data from the server with the host name <code>allowed.awesomerustapp.com</code>.</p>
+<p>Therefore, when you send a <code>POST</code> to another server, what actually happens is the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS workflow</a>:</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/preflight.png" alt="cors_workflow_with_reqwest"></p>
+<p>We first ask the server what is allowed, where do you accept requests from and what are your accepted headers. If we fulfill all of these requirements, then we can send a <code>POST</code>.</p>
+<p>The web framework <a href="https://actix.rs/">actix</a> for example has its own <a href="https://actix.rs/actix-web/actix_web/middleware/cors/index.html">cors middleware</a>.</p>
+<blockquote>
+<p>Disclaimer: Not all frameworks (like <a href="https://github.com/SergioBenitez/Rocket/issues/25">rocket</a> and <a href="https://github.com/rustasync/tide/pull/104">tide</a>) are implementing CORS in their core. However, in a professional environment, you handle CORS on the <a href="https://imti.co/kubernetes-ingress-nginx-cors/">DevOps side</a> of things and put it for example in your NGINX config.</p>
+</blockquote>
+<h2 id="the-job-of-a-framework">The Job of a Framework</h2>
+<p>We use the hard work of other people to create web applications. Everything has to be implemented at some point, just not from you for most of the time. A framework covers the following concerns:</p>
+<ul>
+<li>Start a web server and open a PORT</li>
+<li>Listen to requests on this PORT</li>
+<li>If a request comes in, look at the Path in the HTTP header</li>
+<li>Route the request to the <code>handler</code> according to the Path</li>
+<li>Help you extract the information out of the request</li>
+<li>Pack the generated <code>data</code> and <code>HTTP StatusCode</code> (created from you) and form a <code>response</code></li>
+<li>Send the <code>response</code> back to the sender</li>
+</ul>
+<p>The Rust web framework <a href="https://github.com/rustasync/tide">tide</a> includes <a href="https://github.com/rustasync/http-service">http-service</a>, which provides the basic abstractions you need when working with HTTP calls. The crate http-service is built on top of <a href="https://github.com/hyperium/hyper">hyper</a>, which transforms TCP-Streams to valid HTTP requests and responses.</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/web-dev-rust.png" alt="architecture overview tide"></p>
+<p>Your job is to create <code>routes</code> like <code>/users/:id</code> and add a <code>route_handler</code> which is a function to handle the requests on this particular path. The framework makes sure that it directs the incoming HTTP requests to this particular handler.</p>
+<h2 id="creating-an-api-spec">Creating an API spec</h2>
+<p>You have to define your resources first to get an idea what your application needs to handle and uncover relationships between them. So if you want to build a idea-up-voting site, you would have:</p>
+<ul>
+<li>Users</li>
+<li>Ideas</li>
+<li>Votes</li>
+</ul>
+<p>A simple spec for this scenario would look like this:</p>
+<ul>
+<li>Users
+<ul>
+<li>POST <code>/users</code></li>
+<li>GET <code>/users</code></li>
+<li>PUT <code>/users/:user_id</code></li>
+<li>PATCH <code>/users/:user_id</code></li>
+<li>DELETE <code>/users/:user_id</code></li>
+<li>GET <code>/users/:user_id</code></li>
+</ul>
+</li>
+</ul>
+<p>Ideas and Votes behave accordingly. A spec is helpful for two reasons:</p>
+<ul>
+<li>It gives you guidelines not to forget a path</li>
+<li>It helps to communicate to your API users what to expect</li>
+</ul>
+<p>You can tools like <a href="https://swagger.io/">swagger</a> to write a full spec which also describes the structure of the data and the messages/responses for each path and route.</p>
+<p>A more professional spec would include the return values for each route and the request and response bodies. However, the spec can be finalized once you know how your API should look like and behave. To get started, a simple list is enough.</p>
+<h2 id="crafting-the-api">Crafting the API</h2>
+<p>Depending on the framework you are using, your implementation will look different. You have to have the following features on your radar to look out for:</p>
+<ul>
+<li>Creating routes for each method (like <code>app.at(&quot;/users&quot;).post(post_users_handler)</code>)</li>
+<li>Extracting information from the request (like headers, uri-params and JSON from the request body)</li>
+<li>Creating responses with proper HTTP codes (<code>200</code>, <code>201</code>, <code>400</code>, <code>404</code> etc.)</li>
+</ul>
+<p>I am using the latest version of <a href="https://github.com/rustasync/tide">tide</a> for this web series. You can add it in your <strong>Cargo.toml</strong> file and use it for your web app:
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">dependencies</span>]
+<span style="color:#a6e22e">tide</span> = <span style="color:#e6db74">&#34;0.1.0&#34;</span></code></pre></div></p>
+<p>Our first <code>User</code> implementation will look like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">async <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">handle_get_users</span>(cx: <span style="color:#a6e22e">Context</span><span style="color:#f92672">&lt;</span>Database<span style="color:#f92672">&gt;</span>) -&gt; <span style="color:#a6e22e">EndpointResult</span> {
+    Ok(response::json(cx.app_data().get_all()))
+}
+
+async <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">handle_get_user</span>(cx: <span style="color:#a6e22e">Context</span><span style="color:#f92672">&lt;</span>Database<span style="color:#f92672">&gt;</span>) -&gt; <span style="color:#a6e22e">EndpointResult</span> {
+    <span style="color:#66d9ef">let</span> id <span style="color:#f92672">=</span> cx.param(<span style="color:#e6db74">&#34;id&#34;</span>).client_err()<span style="color:#f92672">?</span>;
+    <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">let</span> Some(user) <span style="color:#f92672">=</span> cx.app_data().get(id) {
+        Ok(response::json(user))
+    } <span style="color:#66d9ef">else</span> {
+        Err(StatusCode::NOT_FOUND)<span style="color:#f92672">?</span>
+    }
+}
+
+async <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">handle_update_user</span>(<span style="color:#66d9ef">mut</span> cx: <span style="color:#a6e22e">Context</span><span style="color:#f92672">&lt;</span>Database<span style="color:#f92672">&gt;</span>) -&gt; <span style="color:#a6e22e">EndpointResult</span><span style="color:#f92672">&lt;</span>()<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> user <span style="color:#f92672">=</span> await<span style="color:#f92672">!</span>(cx.body_json()).client_err()<span style="color:#f92672">?</span>;
+    <span style="color:#66d9ef">let</span> id <span style="color:#f92672">=</span> cx.param(<span style="color:#e6db74">&#34;id&#34;</span>).client_err()<span style="color:#f92672">?</span>;
+
+    <span style="color:#66d9ef">if</span> cx.app_data().set(id, user) {
+        Ok(())
+    } <span style="color:#66d9ef">else</span> {
+        Err(StatusCode::NOT_FOUND)<span style="color:#f92672">?</span>
+    }
+}
+
+async <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">handle_create_user</span>(<span style="color:#66d9ef">mut</span> cx: <span style="color:#a6e22e">Context</span><span style="color:#f92672">&lt;</span>Database<span style="color:#f92672">&gt;</span>) -&gt; <span style="color:#a6e22e">EndpointResult</span><span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> user <span style="color:#f92672">=</span> await<span style="color:#f92672">!</span>(cx.body_json()).client_err()<span style="color:#f92672">?</span>;
+    Ok(cx.app_data().insert(user).to_string())
+}
+
+async <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">handle_delete_user</span>(cx: <span style="color:#a6e22e">Context</span><span style="color:#f92672">&lt;</span>Database<span style="color:#f92672">&gt;</span>) -&gt; <span style="color:#a6e22e">EndpointResult</span><span style="color:#f92672">&lt;</span>String<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> id <span style="color:#f92672">=</span> cx.param(<span style="color:#e6db74">&#34;id&#34;</span>).client_err()<span style="color:#f92672">?</span>;
+    Ok(cx.app_data().delete(id).to_string())
+}
+
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#75715e">// We create a new application with a basic, local database
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// You can use your own implementation, or none: App::new(())
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> app <span style="color:#f92672">=</span> App::new(Database::default());
+    app.at(<span style="color:#e6db74">&#34;/users&#34;</span>)
+        .post(handle_create_user)
+        .get(handle_get_users);
+    app.at(<span style="color:#e6db74">&#34;/users/:id&#34;</span>)
+        .get(handle_get_user)
+        .patch(handle_update_user)
+        .delete(handle_delete_user);
+
+    app.serve(<span style="color:#e6db74">&#34;127.0.0.1:8000&#34;</span>).unwrap();
+}
+</code></pre></div>
+<p><em>You can find the full implementation of the code in the <a href="https://github.com/gruberb/web-programming-in-rust/tree/master/03-x">GitHub repository</a> to this series.</em></p>
+<p>We see that we first have to create a new App</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> app <span style="color:#f92672">=</span> App::new(())
+</code></pre></div>
+<p>add routes</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">app.at(<span style="color:#e6db74">&#34;/users&#34;</span>)
+</code></pre></div>
+<p>and for each route add the HTTP requests we want to handle</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">app.at(<span style="color:#e6db74">&#34;/users&#34;</span>).get(handle_get_users)
+</code></pre></div>
+<p>Each framework has a different method of extracting parameters and JSON bodies. Actix is using <a href="https://actix.rs/docs/extractors/">Extractors</a>, rocket is using <a href="https://api.rocket.rs/v0.4/rocket/request/trait.FromQuery.html">Query Guards</a>.</p>
+<p>With tide, you can access request parameters and bodies and database connections through <code>Context</code>. So when we want to update a <code>User</code> with a specific <code>id</code>, we send a <code>PATCH</code> to <code>/users/:id</code>. From there, we call the <code>handle_update_user</code> method.</p>
+<p>Inside this method, we can access the <code>id</code> from the URI like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">let</span> id <span style="color:#f92672">=</span> cx.param(<span style="color:#e6db74">&#34;id&#34;</span>).client_err()<span style="color:#f92672">?</span>;
+</code></pre></div>
+<p>Each framework is also handling its own way of sending responses back to the sender. Tide is using <code>EndpointResult</code>, rocket is using <a href="https://api.rocket.rs/v0.4/rocket/struct.Response.html">Response</a> and actix <a href="https://actix.rs/docs/response/">HttpResponse</a>.</p>
+<p>Everything else is completely up to you. The framework might help you with session management and authentication, but you can also implement this yourself.</p>
+<p><strong>My suggestion is: Build the first skeleton of your app with the framework of your choice, figure out how to extract information out of requests and how to form responses. Once this is working, you can use your Rust skills to build small or big applications as you wish.</strong></p>
+<h2 id="input-validation">Input Validation</h2>
+<p>Your best friend in the Rust world will be <a href="https://github.com/serde-rs/serde">serde</a>. It will help you parse JSON and other formats, but will also allow you to serialize your data.</p>
+<p>When we talk about input validation, we want to make sure the data we are getting has the right format. Lets say we are extracting the JSON body out of a request:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">let</span> user: <span style="color:#a6e22e">User</span> <span style="color:#f92672">=</span> serde_json::from_str(<span style="color:#f92672">&amp;</span>request_body);
+</code></pre></div>
+<p>We are using <a href="https://docs.serde.rs/serde_json/">serde_json</a> here to transform a JSON-String into a Struct of our choice. So if we created this struct:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">User</span> {
+    name: String,
+    height: <span style="color:#66d9ef">u32</span>,
+}
+</code></pre></div>
+<p>we want to make sure the sender is including <code>name</code> <strong>and</strong> <code>height</code>. If we just do <code>serde_json::from_str</code>, and the sender forgot to pass on the height, the app will panic and shut down, since we expect the response to be a user: <code>let user: User</code>.</p>
+<p>We can improve the error handling like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">let</span> user: <span style="color:#a6e22e">User</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">match</span> serde_json::from_str(<span style="color:#f92672">&amp;</span>request_body) {
+    Ok(user) <span style="color:#f92672">=&gt;</span> user,
+    Err(error) <span style="color:#f92672">=&gt;</span> handle_error_case(error),
+};
+</code></pre></div>
+<p>We catch the error and call our <code>handle_error_case</code> method to handle it gracefully.</p>
+<h2 id="summary">Summary</h2>
+<ol>
+<li>Pick a framework of your choice
+<ul>
+<li><a href="https://rocket.rs/">rocket</a> is nightly</li>
+<li><a href="https://actix.rs/">actix</a> is stable</li>
+<li><a href="https://github.com/rustasync/tide">tide</a> is fostered close to the Rust Core and also works on Rust nightly</li>
+</ul>
+</li>
+<li>Know that there is no common CORS handling (yet). Recommendation is to handle this on the DevOps side (NGINX for example)</li>
+<li>After picking a framework, spec out your resources (<code>/users</code>: GET, POST etc.)</li>
+<li>Figure out how the framework of your choice is handling extracting parameters and JSON from the request and how to form a response</li>
+<li>Validate your input via <code>match</code> and <a href="https://docs.serde.rs/serde_json/">serde_json</a></li>
+</ol>
+
+</div>
+
+
+    </div>
+
+    
+  </body>
+</html>

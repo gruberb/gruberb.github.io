@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>rust on Bastian Gruber</title>
+    <link>https://gruberbastian.com/tags/rust/</link>
+    <description>Recent content in rust on Bastian Gruber</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 02 May 2019 20:20:00 +0200</lastBuildDate><atom:link href="https://gruberbastian.com/tags/rust/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Explained: Futures in Rust for Web Development</title>
+      <link>https://gruberbastian.com/posts/rust_futures/</link>
+      <pubDate>Thu, 02 May 2019 20:20:00 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/rust_futures/</guid>
+      <description>As I explained in one of my last articles, Futures are one part of an asynchrounous environment. We need Syntax, Type and a Runtime to be able to run code in an non blocking way. Futures are the type part of the Rust async story.
+ Content  The two perspectives What actually is a Future? When to use Futures? Why does using Futures save time? How to use Futures?</description>
+    </item>
+    
+    <item>
+      <title>Web Development with Rust - 03/x: Create a REST API</title>
+      <link>https://gruberbastian.com/posts/rust_api/</link>
+      <pubDate>Mon, 15 Apr 2019 09:51:55 +0100</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/rust_api/</guid>
+      <description>Content  HTTP Requests POST/PUT/PATCH/DELETE are special The Job of a Framework Creating an API spec Crafting the API Input Validation Summary   APIs are the bread and butter of how a modern and fast-paced web environment. Frontend application, other web services and IoT devices need to be able to talk to your service. API endpoints are like doors to which you decide what comes in and in which format.</description>
+    </item>
+    
+    <item>
+      <title>Explained: How does async work in Rust?</title>
+      <link>https://gruberbastian.com/posts/rust_async/</link>
+      <pubDate>Tue, 02 Apr 2019 20:20:00 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/rust_async/</guid>
+      <description>This article will outline an overview of the why and how async exists in Rust. The differences between concurrency, parallelism and asynchronous code won&amp;rsquo;t be covered.
+Async Concept Asynchronous programming is a concept which allows not blocking the program workflow when waiting for the results of certain actions. So you can open a large file or query a database, but your program will continue processing each line afterwards.
+This concept was first needed on the kernel level, because you want to be able to listen to music while you type something on your keyboard.</description>
+    </item>
+    
+    <item>
+      <title>Web Development with Rust— 02/x: Deploy your first App</title>
+      <link>https://gruberbastian.com/posts/deploy_rust/</link>
+      <pubDate>Tue, 02 Apr 2019 20:20:00 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/deploy_rust/</guid>
+      <description>You can find the Introduction to web programming in Rust over here
+  Update 08.07.2019: tide 0.2.0
+This series has 3 goals  Show the obstacles new developers will face when programming in Rust but also its advantages when it comes to the specific topic (this time: Deployments). Show different options for web development in Rust. Always have an updated application in production afterwards.  Number three is super important for me.</description>
+    </item>
+    
+    <item>
+      <title>Intro to Rust for NodeJS Developers</title>
+      <link>https://gruberbastian.com/posts/intro_rust/</link>
+      <pubDate>Mon, 25 Mar 2019 20:20:00 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/intro_rust/</guid>
+      <description>You can find the second article in this series (&amp;ldquo;deploy your first Rust app&amp;rdquo;) over here.
+ Rust is different. You can pick up Python or Ruby over the weekend, create a first CRUD application and be happy with the results.
+With Rust… with Rust you will struggle to pass a String to a different method, change and return it. You then will order the Rust book, see its size, sigh and get started.</description>
+    </item>
+    
+    <item>
+      <title>Project: One month of focus [UPDATE]</title>
+      <link>https://gruberbastian.com/posts/project-one-month/</link>
+      <pubDate>Mon, 01 Oct 2018 08:00:00 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/project-one-month/</guid>
+      <description>Update: Since I wrote this blog post, created the second MeetUp for &amp;ldquo;Rust and Tell&amp;rdquo;, something unexpected happened: My daugther was born. Way too early (3 months), so instead of spending September in front of Rust code, I spend around 10 hours a day in the hospital. This being said: The project for October is: Don&amp;rsquo;t have any plans ;)
+The dilemma of our privilidged and comfortable lifes as software engineers is:</description>
+    </item>
+    
+  </channel>
+</rss>

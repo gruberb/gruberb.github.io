@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.78.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Explained: How does async work in Rust? &middot; Bastian Gruber</title>
+
+  
+  <link rel="stylesheet" href="https://gruberbastian.com/css/print.css" media="print">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/poole.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/syntax.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/hyde.css">
+  <link href="https://fonts.googleapis.com/css?family=Asap|Roboto+Mono&display=swap" rel="stylesheet">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Bastian Gruber" />
+</head>
+
+  <body class="theme-base-08 ">
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://gruberbastian.com/"><h1>Bastian Gruber</h1></a>
+      <p class="lead">
+       Software &#43; Philosophy 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="https://gruberbastian.com/">Home</a> </li>
+      <li><a href="/posts/about/"> About </a></li><li><a href="/posts/interviews/"> Interviews </a></li><li><a href="/posts/talks/"> Talks </a></li>
+    </ul>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</div>
+
+    <div class="content container">
+    <div class="post">
+  <h1>Explained: How does async work in Rust?</h1>
+  <span class="post-date">Tue, Apr 2, 2019</span>
+  <p>This article will outline an overview of the why and how async exists in Rust. The differences between concurrency, parallelism  and asynchronous code won&rsquo;t be covered.</p>
+<h2 id="async-concept">Async Concept</h2>
+<p>Asynchronous programming is a concept which allows not blocking the program workflow when waiting for the results of certain actions. So you can open a large file or query a database, but your program will continue processing each line afterwards.</p>
+<p>This concept was first needed on the kernel level, because you want to be able to listen to music while you type something on your keyboard. On a software level, this was achieved through multi-threading. On the CPU side, you can have multiple processes running on each core at the same time.</p>
+<p>Later on, web servers came into play and needed to be able to hold millions of connections while performing I/O tasks. To be able to do this in a non-blocking way, we can either use threads on the kernel level, or implement our own way of handling threads and events.</p>
+<h2 id="whats-needed-and-why">What&rsquo;s needed and why</h2>
+<p>The kernel already has the concept implemented (through threads and other concepts), however they are quite &ldquo;expensive&rdquo;, which means there is just a finite amount of resources available and dealing with this problem on OS level adds a whole new level of complexity.</p>
+<p>Therefore it would be nice to handle our internal async flow on program level. We need a so called runtime, which can handle async code and is able to communicate to the kernel.</p>
+<p>The general idea is:</p>
+<ul>
+<li>Implement your own way of handling threads and queues on program level (green threads)</li>
+<li>Add syntactic sugar to your language so the runtime/compiler can identify async parts of the code</li>
+<li>Add async types so they can notify when they are &ldquo;done&rdquo;</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/async_overview_02.png" alt="Async overview"></p>
+<p>Instead of dealing with Strings for example, an async type needs to have certain states (processing and done). The runtime can handle these types and set the state in them. Afterwards in your code you can access the value at a later point or wait for them to be done before you continue.</p>
+<h2 id="workflow">Workflow</h2>
+<p>You mark a method in your code as async, in this async method you can now use your async types. You can either wait for them to finish (&ldquo;fetch data from GitHub&hellip;&quot;) or you &ldquo;start&rdquo; them, continue with your flow and later on check if they finished and use the value from them.</p>
+<p>Once done writing the code, you need a runtime which can take this async part of your code and actually run it. The runtime needs also to take processes from the queue and hand it over to the operating system, since there is where the real work happens.</p>
+<p>After the operating system is done with the processing, it will notify the runtime, which in return will set the state inside the async type and hand it back to the program workflow.</p>
+<h2 id="nodejs-vs-go-vs-rust">NodeJS vs. Go. vs. Rust</h2>
+<p>Lets look at how Node, Go and Rust are implementing the concepts we talked about, namely: Syntax, Type and Runtime.</p>
+<h3 id="nodejs">NodeJS</h3>
+<p>In NodeJS you have the <code>async/await</code> syntax and <code>Promises</code>. You can <code>await</code> a <code>Promise</code> aka an action which might need more time to process.</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/node_async.png" alt="NodeJS async"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">async_method</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">async</span> () =&gt; {
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dbResults</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">dbQuery</span>();
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">results</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">await</span> <span style="color:#a6e22e">serviceCall</span>(<span style="color:#a6e22e">dbResults</span>);
+    <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">results</span>);
+}
+</code></pre></div>
+<h2 id="go">Go</h2>
+<p>In Go, you start <code>goroutines</code> instead of <code>Promises</code>. And instead of <code>async/await</code> you simple write <code>go method_name()</code>. Instead of V8, Go ships with its own Go runtime.</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/go_async.png" alt="Go async"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">f</span>(<span style="color:#a6e22e">greeting</span> <span style="color:#66d9ef">string</span>) {
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">greeting</span>, <span style="color:#e6db74">&#34;, World!&#34;</span>)
+}
+
+<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">f</span>(<span style="color:#e6db74">&#34;Hello&#34;</span>)
+</code></pre></div>
+<h2 id="rust">Rust</h2>
+<p>The Rust Async ecosystem is still in progress and not final yet. The proposal here is to also use <code>async/await</code>, instead of <code>Promises</code> and <code>Goroutines</code> you have <a href="https://github.com/rust-lang-nursery/futures-rs"><code>Futures</code></a>.</p>
+<p>The Rust Language Team decided <a href="https://github.com/rust-lang/rfcs/blob/0806be4f282144cfcd55b1d20284b43f87cbe1c6/text/0230-remove-runtime.md">not to include</a> any runtime. Rust wants to be as small as possible, and to be able to swap parts in and out as needed. Therefore you need to rely on crates to provide the appropiate runtime for you.</p>
+<p>The most popular one is <a href="https://tokio.rs/"><code>tokio</code></a>, which uses <a href="https://github.com/carllerche/mio"><code>mio</code></a> internally as its event queue. Even other runtimes are using <code>mio</code> since it’s providing abstraction over kernel methods like epoll , kqueue and IOCP.</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/rust_async_01.png" alt="Rust async"></p>
+<p>One special feature about Rust is also that you have to &ldquo;start&rdquo; a Future. So just declaring it like a Promise in NodeJS or writing <code>go name_of_goroutine()</code> doesn&rsquo;t trigger the Future to do something yet. So in case you are using tokio, you need to:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">let</span> response <span style="color:#f92672">=</span> client.get(<span style="color:#e6db74">&#34;http://httpbin.org&#34;</span>)
+
+<span style="color:#66d9ef">let</span> response_is_ok <span style="color:#f92672">=</span> response
+    .and_then(<span style="color:#f92672">|</span>resp<span style="color:#f92672">|</span> {
+        println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;Status: {}&#34;</span>, resp.status());
+        Ok(())
+
+tokio::run(response_is_ok);
+</code></pre></div>
+<p>In the hopefully not so distant future, you can use <code>async</code> in Rust like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[async]</span>
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">async_function_name</span>(...) -&gt; Result<span style="color:#f92672">&lt;</span>ReturnType, ErrorType<span style="color:#f92672">&gt;</span> {
+    <span style="color:#66d9ef">let</span> db_results <span style="color:#f92672">=</span> await<span style="color:#f92672">!</span>(query_database());
+    <span style="color:#66d9ef">let</span> more_data <span style="color:#f92672">=</span> await<span style="color:#f92672">!</span>(fetch_another_service(db_resukts));
+    process(more_data)
+}
+</code></pre></div>
+<p><a href="https://github.com/alexcrichton/futures-await">The <code>async/await</code> syntax</a> is still in process and needs to be approved, merged and parts of the language adjusted to the new form.</p>
+<h2 id="rust-async-in-detail">Rust Async in Detail</h2>
+<p>Lets zoom in a bit on how a runtime works or can work:</p>
+<p><img src="https://raw.githubusercontent.com/gruberb/web-programming-in-rust/master/assets/async_01.png" alt="Rust tokio async"></p>
+<p>Tokio is using <a href="https://tokio.rs/docs/going-deeper/building-runtime/">internally</a> the <a href="https://www.puncsky.com/blog/2015/01/13/understanding-reactor-pattern-for-highly-scalable-i-o-bound-web-server/">Reactor-Executor pattern</a>.</p>
+<p>What tokio and other runtimes want to achieve is a highly scalable server for high raw data throughput. They don&rsquo;t want to block when doing I/O operations. We have basically two options here: Thread-Based or Event-Driven Architecture. To make it short: Thread-Based is limiting because of the limited physical resources.</p>
+<p>So Event-Driven is best in our case. It is registering incoming Future requests and saves a pointer to the async function handler. It then triggers an event in the kernel. Once the I/O operation is done, we call the pointer and execute the async method with the results from the I/O (kernel).</p>
+<p>For this, we need a Reactor, which notifies if data is coming over the network or a file writing operation is in progress, and an executor which takes this data and executes the async function (Future) with it.</p>
+<p>In addition, each runtime needs to understand kernel methods (like <a href="https://people.eecs.berkeley.edu/~sangjin/2012/12/21/epoll-vs-kqueue.html">epoll</a>) for starting I/O operations. For Rust there is a crate called <a href="https://github.com/carllerche/mio">mio</a> which implements these kernel methods. Tokio is using mio internally.</p>
+<h2 id="is-it-usable">Is it usable?</h2>
+<p>There is a lot happening at the moment in async Rust world. It will take a bit of time to have a final version out there which is easy to use and understand. Until then you can use your web frameworks like you are used to, since they already ship with a runtime.</p>
+<p>Dropbox for example is using Futures in combination with <code>tokio</code> in production to serve data from the disk on Dropbox&rsquo;s servers. Futures is in Rust stable in version 0.1, and in Rust nightly in version 0.3. The runtime <code>tokio</code> is relying on Rust stable, so it is using Futures 0.1.</p>
+<p>You can transform 0.3 into 0.1 Futures and vice-versa via the <a href="https://rust-lang-nursery.github.io/futures-api-docs/0.3.0-alpha.9/futures/compat/index.html">compat module</a>.</p>
+<p>Rust needs a few more months to get ready for its easy to use and powerful Futures. They are less expensive as in other languages, and you can have a thin or thick runtime, it&rsquo;s totally up to you.</p>
+<h2 id="get-started">Get started</h2>
+<p>As mentioned, tokio is one of the runtimes you can use. Another one is a combination of <a href="https://github.com/withoutboats/romio">Romio</a> and <a href="https://github.com/withoutboats/juliex">Juliex</a>.</p>
+<p>If you are building web applications, there is a crate called <a href="https://hyper.rs/">hyper</a>, which already includes tokio. So here you can use Futures 0.1 in you application.</p>
+<h5 id="further-reading">Further reading</h5>
+<ol>
+<li><a href="https://manishearth.github.io/blog/2018/01/10/whats-tokio-and-async-io-all-about/">What Are Tokio and Async IO All About?</a></li>
+<li><a href="https://slides.com/wraithm/async-io-in-rust-and-haskell/#/">Futures in Rust and Haskell</a></li>
+<li><a href="https://v8.dev/blog/fast-async">Fast async in NodeJS</a></li>
+<li><a href="https://gobyexample.com/goroutines">Go by example: Goroutines</a></li>
+<li><a href="https://tokio.rs/docs/going-deeper/building-runtime/">Tokio: Building a runtime</a></li>
+</ol>
+
+</div>
+
+
+    </div>
+
+    
+  </body>
+</html>

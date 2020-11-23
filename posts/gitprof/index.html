@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="generator" content="Hugo 0.78.2" />
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>Git proficiency with rebase &middot; Bastian Gruber</title>
+
+  
+  <link rel="stylesheet" href="https://gruberbastian.com/css/print.css" media="print">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/poole.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/syntax.css">
+  <link rel="stylesheet" href="https://gruberbastian.com/css/hyde.css">
+  <link href="https://fonts.googleapis.com/css?family=Asap|Roboto+Mono&display=swap" rel="stylesheet">
+
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Bastian Gruber" />
+</head>
+
+  <body class="theme-base-08 ">
+  <div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <a href="https://gruberbastian.com/"><h1>Bastian Gruber</h1></a>
+      <p class="lead">
+       Software &#43; Philosophy 
+      </p>
+    </div>
+
+    <ul class="sidebar-nav">
+      <li><a href="https://gruberbastian.com/">Home</a> </li>
+      <li><a href="/posts/about/"> About </a></li><li><a href="/posts/interviews/"> Interviews </a></li><li><a href="/posts/talks/"> Talks </a></li>
+    </ul>
+
+    <p>&copy; 2020. All rights reserved. </p>
+  </div>
+</div>
+
+    <div class="content container">
+    <div class="post">
+  <h1>Git proficiency with rebase</h1>
+  <span class="post-date">Thu, May 4, 2017</span>
+  <p>I am a developer now for more than 10 years. Except a few years with SVN, I was solely working with Git. The best quote I got from one of my CTOs in the early days, was:</p>
+<p>&ldquo;Git is like the whole world, but we need just the size of a lake of it.&rdquo;</p>
+<p>You mainly use:</p>
+<ul>
+<li>git clone</li>
+<li>git pull</li>
+<li>git push</li>
+<li>git add</li>
+<li>git commit</li>
+<li>git checkout and git checkout -b</li>
+</ul>
+<p>That&rsquo;s mostly it, right? Creating new branches, pushing them to Bitbucket or GitHub, and then merge them via the GUI of one of the two websites.</p>
+<p>My latest project let me work with around 7 developers, and we all work on the same project, and on multiple GitHub issues at once. There, a simple &ldquo;git merge develop MYBRANCH&rdquo; didn&rsquo;t cut it anymore. More was needed. And there I found it, the holy command of the year 2017. At least of my version of 2017.</p>
+<h3 id="git-rebase--i-head3-and-other-funny-things">&ldquo;git rebase -i HEAD~3&rdquo; and other funny things.</h3>
+<p>A colleague in the current project introduced me to a whole new world of telling &ldquo;stories&rdquo; with your git commits. Grouping them together so the reviewer gets a sense of what is going on and for which reason. Back then, in the old days, I would just commit around 10 times, push it all to GitHub and the reviewer went file for file and try to understand what&rsquo;s going now.</p>
+<p>Now though, I group commits together which belong together. So the reviewer can go commit by commit through my pull request and understand what&rsquo;s going on.</p>
+<h3 id="an-example">An example</h3>
+<p>I mainly work with React in the frontend is the current project, so lets grab an issue from GitHub which is called &ldquo;Add a switch component to the User registration form&rdquo;. The steps we will complete the task is:</p>
+<ul>
+<li>First find if an existing switch component exists</li>
+<li>Grab the component and place it inside the existing form</li>
+<li>Figure out we need to adjust the css slightly to make it work</li>
+<li>Test the switch by hand in the browser</li>
+<li>If everything works, we are happy and commit</li>
+<li>Afterwards we realise we cannot use the return value of the Switch component (it&rsquo;s on/off instead of true/false)</li>
+<li>Therefore we rewrite the logic of the Switch</li>
+<li>We wire the new switch with the existing user form logic</li>
+<li>We test it, it works, we commit</li>
+<li>We run the tests and figure out some old tests fail</li>
+<li>We rewrite the tests, change some more logic, and commit</li>
+<li>Now the linting fails, so we fix some idention issues and add missing semicolons</li>
+<li>We commit and are done.</li>
+</ul>
+<p>So we have around 3-4 commit with this pull request, everything is mixed up and from the timing of the commits and the grouping of the resulting code, it&rsquo;s really hard to read. So here it comes, our rescue:</p>
+<h3 id="git-rebase--i-head4">git rebase -i HEAD~4</h3>
+<p>Before we move on, we have to make sure that our current &ldquo;develop&rdquo; branch is up to date. Therefore we:</p>
+<ul>
+<li><code>git checkout develop</code></li>
+<li><code>git pull</code></li>
+</ul>
+<p>(<code>git pull</code> works differently then <code>git pull origin develop</code>. With <code>git pull</code>, we&rsquo;ll get the whole history of every branch, also from the remote ones.)</p>
+<p>and then, checkout our feature branch again:</p>
+<ul>
+<li><code>git checkout 1234-switch-userform</code></li>
+</ul>
+<p>And now comes the magic. We can group different commits together with the use of <code>git rebase -i HEAD~4</code>. What this does, is:</p>
+<ul>
+<li>Opens your standard terminal text editor (probably vi or vim)</li>
+<li>Shows you the last 4 commits from the latest HEAD (HEAD~4)</li>
+<li>Offers you options to pick, squash, drop, edit and fix commits</li>
+</ul>
+<p><!-- raw HTML omitted -->Here is a nice overview of all the options<!-- raw HTML omitted --> you are given there.</p>
+<p>Now you can pick and group commits together with:</p>
+<ul>
+<li>put a <code>pick</code> in front of your first commit you want to combine</li>
+<li>and then remove the <code>pick</code> in front of the other commits and put a <code>s</code> for <code>squash</code> in front of them (in case you want to combine/squash them together into one commit)</li>
+</ul>
+<h3 id="what-does-it-bring-you">What does it bring you?</h3>
+<p>Well, it&rsquo;s a nice idea to group commits together which belong together, so the reviewer of your code has an easier job going through each step and make a better sense of it. Also, your git history stays super clean and readable.</p>
+<p>Think about a super way of documenting your process and code. Once you figured out the mechanics, it&rsquo;s a huge boost in professionality and quality.</p>
+
+</div>
+
+
+    </div>
+
+    
+  </body>
+</html>

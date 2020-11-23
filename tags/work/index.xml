@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>work on Bastian Gruber</title>
+    <link>https://gruberbastian.com/tags/work/</link>
+    <description>Recent content in work on Bastian Gruber</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 30 Dec 2019 14:37:04 +0200</lastBuildDate><atom:link href="https://gruberbastian.com/tags/work/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Working 100% remote in a distributed team</title>
+      <link>https://gruberbastian.com/posts/remote/</link>
+      <pubDate>Mon, 30 Dec 2019 14:37:04 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/remote/</guid>
+      <description>Info: This article was written in December 2019, before the pandemic hit the world.
+My personal biggest factor being a software developer is to be able to work at the cutting edge of technology + industries and generally think about how life should look like in 10 or 20 years from now.
+One of the biggest aspects, at least in my opinion, will be how we see companies, jobs and our current system.</description>
+    </item>
+    
+  </channel>
+</rss>

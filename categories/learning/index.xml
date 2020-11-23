@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>learning on Bastian Gruber</title>
+    <link>https://gruberbastian.com/categories/learning/</link>
+    <description>Recent content in learning on Bastian Gruber</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 01 Oct 2018 08:00:00 +0200</lastBuildDate><atom:link href="https://gruberbastian.com/categories/learning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Project: One month of focus [UPDATE]</title>
+      <link>https://gruberbastian.com/posts/project-one-month/</link>
+      <pubDate>Mon, 01 Oct 2018 08:00:00 +0200</pubDate>
+      
+      <guid>https://gruberbastian.com/posts/project-one-month/</guid>
+      <description>Update: Since I wrote this blog post, created the second MeetUp for &amp;ldquo;Rust and Tell&amp;rdquo;, something unexpected happened: My daugther was born. Way too early (3 months), so instead of spending September in front of Rust code, I spend around 10 hours a day in the hospital. This being said: The project for October is: Don&amp;rsquo;t have any plans ;)
+The dilemma of our privilidged and comfortable lifes as software engineers is:</description>
+    </item>
+    
+  </channel>
+</rss>
